@@ -16,13 +16,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-function showError(msg, color = "red"){
-  // Jaribu kupata element, kama haipo tumia alert
-  const el = document.getElementById('loginError');
-  if(el){ el.innerText = msg; el.style.color = color; }
-  else { alert(msg); }
-}
-
 window.handleSearch = function(){
   const val = document.getElementById('searchInput').value.toLowerCase().trim();
   if(val === 'admin login' || val === 'admin'){
@@ -32,27 +25,33 @@ window.handleSearch = function(){
 }
 
 window.loadTemplate = function(type){
-  const templates = { hifadhi: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Safari\n[Andika maelezo]`, pwani: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kuogelea\n[Andika maelezo]`, mlima: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kupanda\n[Andika maelezo]` };
-  document.getElementById('kamili').value = templates[type] || "";
+  const templates = { 
+    hifadhi: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Safari, Wildlife\n[Andika maelezo]`, 
+    pwani: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kuogelea\n[Andika maelezo]`, 
+    mlima: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kupanda\n[Andika maelezo]` 
+  };
+  const kamili = document.getElementById('kamili');
+  if(kamili) kamili.value = templates[type] || "";
 }
 
 window.login = async function(){
   const email = document.getElementById('email').value.trim();
   const pass = document.getElementById('pass').value;
 
-  showError("Inaingia...", "#FCD116");
+  // TUMIA ALERT BADALA YA ID ILI SISIBOMOKE
+  alert("Inajaribu kuingia...");
 
   try {
     await signInWithEmailAndPassword(auth, email, pass);
-    showError("", "#FCD116");
     document.querySelector('.login-inputs').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
+    alert("Umeingia kwa mafanikio!");
   } catch (error) {
     console.error("Login Error:", error.code);
-    if(error.code === 'auth/user-not-found'){ showError("User huyu hayupo"); }
-    else if(error.code === 'auth/wrong-password'){ showError("Password si sahihi"); }
-    else if(error.code === 'auth/invalid-email'){ showError("Email sio sahihi"); }
-    else { showError(error.message); }
+    if(error.code === 'auth/user-not-found'){ alert("User huyu hayupo. Ongeza kwanza Firebase"); }
+    else if(error.code === 'auth/wrong-password'){ alert("Password si sahihi"); }
+    else if(error.code === 'auth/invalid-email'){ alert("Email sio sahihi"); }
+    else { alert("Error: " + error.message); }
   }
 }
 
@@ -66,8 +65,10 @@ window.logout = async function(){
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.querySelector('.login-inputs').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
+    const loginDiv = document.querySelector('.login-inputs');
+    const dashDiv = document.getElementById('dashboard');
+    if(loginDiv) loginDiv.style.display = 'none';
+    if(dashDiv) dashDiv.style.display = 'block';
   }
 });
 
@@ -87,6 +88,7 @@ window.saveEneo = async function(){
 async function loadMaeneo() {
   const snapshot = await get(child(ref(db), `maeneo`));
   const maeneoGrid = document.getElementById('maeneoGrid');
+  if(!maeneoGrid) return;
   maeneoGrid.innerHTML = "";
   if(snapshot.exists()){
     snapshot.forEach((childSnapshot) => {
