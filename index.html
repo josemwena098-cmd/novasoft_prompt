@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tembea TZ | Gundua Tanzania</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo-area">
+    <i class="fa-solid fa-mountain-sun logo-icon-text"></i>
+    <div><div class="logo-small">TEMBEA</div><div class="logo-big">TZ</div></div>
+  </div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Tafuta eneo au andika 'admin'...">
+    <i class="fa-solid fa-magnifying-glass" onclick="handleSearch()"></i>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Gundua <span>Urembo wa Tanzania</span></h1>
+  <p class="subtitle">Kutoka Serengeti hadi Zanzibar. Safari yako inaanza hapa</p>
+</section>
+
+<section id="maeneo" class="maeneo-section">
+  <div class="badge-green">Vivutio Maarufu</div>
+  <h2>Chagua <span>Utalii Wako</span></h2>
+  <div class="maeneo-grid" id="maeneoGrid">
+    <p style="text-align:center; color:#aaa">Inapakia vivutio kutoka Firebase...</p>
+  </div>
+</section>
+
+<div id="eneoModal" class="blog-modal">
+  <div class="blog-modal-content">
+    <span class="close-modal" onclick="closeEneo()">&times;</span>
+    <div id="eneoFullContent"></div>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
+<!-- ADMIN LOGIN POPUP -->
+<div id="adminModal" class="blog-modal">
+  <div class="login-container">
+    <span class="close-modal" onclick="closeAdmin()" style="position:absolute; right:15px; top:10px;">&times;</span>
+    <div class="login-header">
+      <i class="fa-solid fa-shield-halved logo-shield"></i>
+      <h2>Admin Login</h2>
+      <p>Tembea TZ Dashboard</p>
+    </div>
+    
+    <div class="input-group">
+      <i class="fa-solid fa-envelope"></i>
+      <input id="email" type="email" placeholder="Email: admin@tembeat z.com">
+    </div>
+    
+    <div class="input-group">
+      <i class="fa-solid fa-lock"></i>
+      <input id="pass" type="password" placeholder="Password">
+    </div>
+    
+    <button onclick="login()" class="btn-login">
+      <span>INGIA</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+    <p id="loginError"></p>
+
+    <!-- DASHBOARD ITAKUJA HAPA BAADA YA LOGIN -->
+    <div id="dashboard" style="display:none; margin-top:20px">
+      <h3 style="color:#FCD116; text-align:center">Dashboard | Ongeza Vivutio</h3>
+      <div class="form-box">
+        <input id="jina" placeholder="Jina la Eneo: mf. Saadani">
+        <input id="mkoa" placeholder="Mkoa: mf. Pwani">
+        <input id="aina" placeholder="Aina: mf. Hifadhi">
+        <input id="picha" placeholder="Link ya Picha">
+        <input id="video" placeholder="Link ya YouTube Video - hiari">
+        <textarea id="fupi" placeholder="Maelezo Mafupi"></textarea>
+        <textarea id="kamili" placeholder="Maelezo Kamili"></textarea>
+        <button onclick="saveEneo()" class="btn-save">HIFADHI ENEO</button>
+        <button onclick="logout()" style="background:red; margin-top:10px" class="btn-save">TOKA</button>
+        <p id="saveMsg" style="color:#00A859;text-align:center;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+</div>
