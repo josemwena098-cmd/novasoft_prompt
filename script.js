@@ -16,6 +16,23 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+// FUNCTION YA KUONYESHA/FICHA FORM
+function showDashboard(show){
+  const loginDiv = document.getElementById('loginInputs');
+  const dashDiv = document.getElementById('dashboard');
+  const header = document.querySelector('.admin-header');
+  
+  if(show){
+    if(loginDiv) loginDiv.style.display = 'none';
+    if(dashDiv) dashDiv.style.display = 'block';
+    if(header) header.style.display = 'none'; // Ficha "Admin Login" pia
+  } else {
+    if(loginDiv) loginDiv.style.display = 'block';
+    if(dashDiv) dashDiv.style.display = 'none';
+    if(header) header.style.display = 'block';
+  }
+}
+
 window.handleSearch = function(){
   const val = document.getElementById('searchInput').value.toLowerCase().trim();
   if(val === 'admin login' || val === 'admin'){
@@ -24,57 +41,40 @@ window.handleSearch = function(){
   }
 }
 
-window.loadTemplate = function(type){
-  const templates = { 
-    hifadhi: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Safari, Wildlife\n[Andika maelezo]`, 
-    pwani: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kuogelea\n[Andika maelezo]`, 
-    mlima: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kupanda\n[Andika maelezo]` 
-  };
-  const kamili = document.getElementById('kamili');
-  if(kamili) kamili.value = templates[type] || "";
-}
-
 window.login = async function(){
   const email = document.getElementById('email').value.trim();
   const pass = document.getElementById('pass').value;
-
-  // TUMIA ALERT BADALA YA ID ILI SISIBOMOKE
-  alert("Inajaribu kuingia...");
+  alert("Inaingia...");
 
   try {
     await signInWithEmailAndPassword(auth, email, pass);
-    document.querySelector('.login-inputs').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    alert("Umeingia kwa mafanikio!");
+    showDashboard(true);
+    alert("Umeingia!");
   } catch (error) {
-    console.error("Login Error:", error.code);
-    if(error.code === 'auth/user-not-found'){ alert("User huyu hayupo. Ongeza kwanza Firebase"); }
+    if(error.code === 'auth/user-not-found'){ alert("User hayupo"); }
     else if(error.code === 'auth/wrong-password'){ alert("Password si sahihi"); }
-    else if(error.code === 'auth/invalid-email'){ alert("Email sio sahihi"); }
     else { alert("Error: " + error.message); }
   }
 }
 
 window.logout = async function(){
   await signOut(auth);
-  document.getElementById('dashboard').style.display = 'none';
-  document.querySelector('.login-inputs').style.display = 'block';
+  showDashboard(false);
   document.getElementById('email').value = '';
   document.getElementById('pass').value = '';
 }
 
+// HII NDIO MUHIMU: KAMA AKO LOGIN ALREADY, ONYESHA DASHBOARD DIRECT
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const loginDiv = document.querySelector('.login-inputs');
-    const dashDiv = document.getElementById('dashboard');
-    if(loginDiv) loginDiv.style.display = 'none';
-    if(dashDiv) dashDiv.style.display = 'block';
+    showDashboard(true);
+  } else {
+    showDashboard(false);
   }
 });
 
 window.saveEneo = async function(){
   if(!auth.currentUser){ alert("Tafadhali ingia kwanza"); return; }
-  if(document.getElementById('jina').value === ""){ alert("Tafadhali jaza jina"); return; }
   const id = document.getElementById('jina').value.toLowerCase().replace(/ /g, "-");
   await set(ref(db, 'maeneo/' + id), {
     jina: document.getElementById('jina').value, mkoa: document.getElementById('mkoa').value, aina: document.getElementById('aina').value,
@@ -109,4 +109,4 @@ window.openEneo = async function(id) {
 }
 
 window.closeEneo = function(){ document.getElementById('eneoModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
-window.closeAdmin = function(){ document.getElementById('adminModal').classList.remove('active'); document.body.style.overflow = 'auto'; logout(); }
+window.closeAdmin = function(){ document.getElementById('adminModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
