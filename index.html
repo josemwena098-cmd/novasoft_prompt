@@ -13,7 +13,7 @@
   <header class="navbar">
     <div class="logo">Tembea<span>TZ</span></div>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Tafuta eneo... Andika 'admin' kuingia">
+      <input type="text" id="searchInput" placeholder="Tafuta eneo... Andika 'admin' kuingia" onkeypress="if(event.key==='Enter'){handleSearch()}">
       <button onclick="handleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
   </header>
@@ -45,14 +45,12 @@
     <div class="admin-box">
       <span class="close-btn" onclick="closeAdmin()">&times;</span>
       
-      <!-- HEADER ITAFICHIKA BAADA YA LOGIN -->
-      <div class="admin-header">
+      <div class="admin-header" id="adminHeader">
         <i class="fa-solid fa-shield-halved"></i>
         <h2>Admin Login</h2>
         <p>Tembea TZ Dashboard</p>
       </div>
 
-      <!-- SEHEMU YA LOGIN - ITAFICHIKA BAADA YA LOGIN -->
       <div class="login-inputs" id="loginInputs">
         <div class="input-group">
           <i class="fa-solid fa-envelope"></i>
@@ -60,12 +58,11 @@
         </div>
         <div class="input-group">
           <i class="fa-solid fa-lock"></i>
-          <input type="password" id="pass" placeholder="Password">
+          <input type="password" id="pass" placeholder="Password" onkeypress="if(event.key==='Enter'){login()}">
         </div>
         <button class="btn-login" onclick="login()">INGIA →</button>
       </div>
 
-      <!-- SEHEMU YA DASHBOARD - ITAONEKANA BAADA YA LOGIN -->
       <div id="dashboard" style="display:none;">
         <h3 style="color:#FCD116; text-align:center; margin-bottom:15px;">Dashboard | Ongeza Vivutio</h3>
         <div class="form-box">
@@ -76,13 +73,11 @@
             <option value="Pwani">Aina: Pwani</option>
             <option value="Mlima">Aina: Mlima</option>
           </select>
-
           <div class="template-btns">
             <button type="button" onclick="loadTemplate('hifadhi')">Template: Hifadhi</button>
             <button type="button" onclick="loadTemplate('pwani')">Template: Pwani</button>
             <button type="button" onclick="loadTemplate('mlima')">Template: Mlima</button>
           </div>
-
           <input type="text" id="picha" placeholder="Link ya Picha">
           <input type="text" id="video" placeholder="Link ya YouTube Video - hiari">
           <textarea id="fupi" placeholder="Maelezo Mafupi"></textarea>
@@ -94,7 +89,6 @@
     </div>
   </div>
 
-  <!-- FIREBASE SCRIPT -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
