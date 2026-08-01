@@ -16,16 +16,14 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-// FUNCTION YA KUONYESHA/FICHA FORM
 function showDashboard(show){
   const loginDiv = document.getElementById('loginInputs');
   const dashDiv = document.getElementById('dashboard');
-  const header = document.querySelector('.admin-header');
-  
+  const header = document.getElementById('adminHeader');
   if(show){
     if(loginDiv) loginDiv.style.display = 'none';
     if(dashDiv) dashDiv.style.display = 'block';
-    if(header) header.style.display = 'none'; // Ficha "Admin Login" pia
+    if(header) header.style.display = 'none';
   } else {
     if(loginDiv) loginDiv.style.display = 'block';
     if(dashDiv) dashDiv.style.display = 'none';
@@ -34,22 +32,38 @@ function showDashboard(show){
 }
 
 window.handleSearch = function(){
-  const val = document.getElementById('searchInput').value.toLowerCase().trim();
-  if(val === 'admin login' || val === 'admin'){
+  const input = document.getElementById('searchInput');
+  if(!input) return;
+  const val = input.value.toLowerCase().trim();
+  if(val === 'admin' || val === 'admin login'){
     document.getElementById('adminModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    input.value = ''; // Futa neno admin
+  } else if(val!== ''){
+    alert("Umetafuta: " + val);
+    input.value = '';
   }
+}
+
+window.loadTemplate = function(type){
+  const templates = {
+    hifadhi: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Safari, Wildlife\n[Andika maelezo]`,
+    pwani: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kuogelea\n[Andika maelezo]`,
+    mlima: `**Mahali:** [Andika Mkoa]\n**Shughuli:** Kupanda\n[Andika maelezo]`
+  };
+  const kamili = document.getElementById('kamili');
+  if(kamili) kamili.value = templates[type] || "";
 }
 
 window.login = async function(){
   const email = document.getElementById('email').value.trim();
   const pass = document.getElementById('pass').value;
+  if(email === "" || pass === ""){ alert("Jaza email na password"); return; }
   alert("Inaingia...");
 
   try {
     await signInWithEmailAndPassword(auth, email, pass);
     showDashboard(true);
-    alert("Umeingia!");
   } catch (error) {
     if(error.code === 'auth/user-not-found'){ alert("User hayupo"); }
     else if(error.code === 'auth/wrong-password'){ alert("Password si sahihi"); }
@@ -64,13 +78,9 @@ window.logout = async function(){
   document.getElementById('pass').value = '';
 }
 
-// HII NDIO MUHIMU: KAMA AKO LOGIN ALREADY, ONYESHA DASHBOARD DIRECT
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    showDashboard(true);
-  } else {
-    showDashboard(false);
-  }
+  if (user) { showDashboard(true); }
+  else { showDashboard(false); }
 });
 
 window.saveEneo = async function(){
