@@ -1,60 +1,204 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tembea TZ</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tembea TZ | Gundua Tanzania</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-  <!-- HEADER NA SEARCH BAR IKO HAPA -->
-  <header class="navbar">
-    <div class="logo">Tembea<span>TZ</span></div>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Tafuta eneo... Andika 'admin' kuingia">
-      <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+<header class="navbar">
+  <div class="logo-area">
+    <i class="fa-solid fa-mountain-sun logo-icon-text"></i>
+    <div><div class="logo-small">TEMBEA</div><div class="logo-big">TZ</div></div>
+  </div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Tafuta eneo au andika 'admin'...">
+    <i class="fa-solid fa-magnifying-glass" id="searchBtn"></i>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Gundua <span>Urembo wa Tanzania</span></h1>
+  <p class="subtitle">Kutoka Serengeti hadi Zanzibar. Safari yako inaanza hapa</p>
+</section>
+
+<section id="maeneo" class="maeneo-section">
+  <div class="badge-green">Vivutio Maarufu</div>
+  <h2>Chagua <span>Utalii Wako</span></h2>
+  <div class="maeneo-grid" id="maeneoGrid">
+    <p style="text-align:center; color:#aaa">Inapakia vivutio kutoka Firebase...</p>
+  </div>
+</section>
+
+<!-- ENEO DETAIL POPUP -->
+<div id="eneoModal" class="blog-modal">
+  <div class="blog-modal-content">
+    <span class="close-modal" id="closeEneoBtn">&times;</span>
+    <div id="eneoFullContent"></div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN POPUP - IMEWEKWA NDANI YA BODY SASA -->
+<div id="adminModal" class="blog-modal">
+  <div class="login-container">
+    <span class="close-modal" id="closeAdminBtn" style="position:absolute; right:15px; top:10px;">&times;</span>
+    <div class="login-header" id="loginHeader">
+      <i class="fa-solid fa-shield-halved logo-shield"></i>
+      <h2>Admin Login</h2>
+      <p>Tembea TZ Dashboard</p>
     </div>
-  </header>
+    
+    <div id="loginInputs">
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="email" type="email" placeholder="Email: admin@tembeat z.com">
+      </div>
+      
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="pass" type="password" placeholder="Password">
+      </div>
+      
+      <button id="loginBtn" class="btn-login">
+        <span>INGIA</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <p id="loginError"></p>
+    </div>
 
-  <!-- HERO + MAENEO + POPUPS ZOTE... -->
-  <!-- Nimeziweka zote kwenye ujumbe uliopita. Copy kama zilivyo -->
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="display:none; margin-top:20px">
+      <h3 style="color:#FCD116; text-align:center">Dashboard | Ongeza Vivutio</h3>
+      <div class="form-box">
+        <input id="jina" placeholder="Jina la Eneo: mf. Saadani">
+        <input id="mkoa" placeholder="Mkoa: mf. Pwani">
+        <input id="aina" placeholder="Aina: mf. Hifadhi">
+        <input id="picha" placeholder="Link ya Picha">
+        <input id="video" placeholder="Link ya YouTube Video - hiari">
+        <textarea id="fupi" placeholder="Maelezo Mafupi"></textarea>
+        <textarea id="kamili" placeholder="Maelezo Kamili"></textarea>
+        <button id="saveBtn" class="btn-save">HIFADHI ENEO</button>
+        <button id="logoutBtn" style="background:red; margin-top:10px" class="btn-save">TOKA</button>
+        <p id="saveMsg" style="color:#00A859;text-align:center;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- MWISHO SANA: WEKA SCRIPT HII HAPA NDANI -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!-- SCRIPT YOTE IKO HAPA NDANI ILI ISIBOMOKE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbYznd_wEyJPr_r1mnvUEy651QPhhk4TI",
-      authDomain: "teknova-3688d.firebaseapp.com",
-      databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
-      projectId: "teknova-3688d",
-      storageBucket: "teknova-3688d.firebasestorage.app",
-      messagingSenderId: "1030215294939",
-      appId: "1:1030215294939:web:4d82493402600f4285d1fe"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDbYznd_wEyJPr_r1mnvUEy651QPhhk4TI",
+    authDomain: "teknova-3688d.firebaseapp.com",
+    databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
+    projectId: "teknova-3688d",
+    storageBucket: "teknova-3688d.firebasestorage.app",
+    messagingSenderId: "1030215294939",
+    appId: "1:1030215294939:web:4d82493402600f4285d1fe"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
 
-    // HAPA NDANI NDIO SEARCH INAFANYA KAZI
-    document.getElementById('searchBtn').addEventListener('click', handleSearch);
-    document.getElementById('searchInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSearch() });
+  function showDashboard(show){
+    document.getElementById('loginInputs').style.display = show? 'none' : 'block';
+    document.getElementById('dashboard').style.display = show? 'block' : 'none';
+    document.getElementById('loginHeader').style.display = show? 'none' : 'block';
+  }
 
-    function handleSearch(){
-      const val = document.getElementById('searchInput').value.toLowerCase().trim();
-      if(val === 'admin' || val === 'admin login'){
-        document.getElementById('adminModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        document.getElementById('searchInput').value = '';
-      }
+  // SEARCH INAFANYA KAZI HIVI
+  document.getElementById('searchBtn').addEventListener('click', handleSearch);
+  document.getElementById('searchInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSearch() });
+
+  function handleSearch(){
+    const val = document.getElementById('searchInput').value.toLowerCase().trim();
+    if(val === 'admin' || val === 'admin login'){
+      document.getElementById('adminModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      document.getElementById('searchInput').value = '';
+    } else if(val !== ''){
+      alert("Umetafuta: " + val);
+      document.getElementById('searchInput').value = '';
     }
+  }
 
-    // ...WEKA CODE NYINGINE ZOTE ZA LOGIN, SAVE HAPA CHINI...
-  </script>
+  // BUTTON ZINGINE
+  document.getElementById('loginBtn').addEventListener('click', login);
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('saveBtn').addEventListener('click', saveEneo);
+  document.getElementById('closeEneoBtn').addEventListener('click', closeEneo);
+  document.getElementById('closeAdminBtn').addEventListener('click', closeAdmin);
+
+  async function login(){
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('pass').value;
+    document.getElementById('loginError').innerText = "Inaingia...";
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      showDashboard(true);
+      document.getElementById('loginError').innerText = "";
+    } catch (error) {
+      if(error.code === 'auth/user-not-found'){ document.getElementById('loginError').innerText = "User hayupo"; }
+      else if(error.code === 'auth/wrong-password'){ document.getElementById('loginError').innerText = "Password si sahihi"; }
+      else { document.getElementById('loginError').innerText = "Error: " + error.message; }
+    }
+  }
+
+  async function logout(){
+    await signOut(auth);
+    showDashboard(false);
+    document.getElementById('email').value = '';
+    document.getElementById('pass').value = '';
+  }
+
+  onAuthStateChanged(auth, (user) => { if (user) { showDashboard(true); } else { showDashboard(false); } });
+
+  async function saveEneo(){
+    if(!auth.currentUser){ alert("Tafadhali ingia kwanza"); return; }
+    document.getElementById('saveMsg').innerText = "Inahifadhi...";
+    const id = document.getElementById('jina').value.toLowerCase().replace(/ /g, "-");
+    await set(ref(db, 'maeneo/' + id), {
+      jina: document.getElementById('jina').value, mkoa: document.getElementById('mkoa').value, aina: document.getElementById('aina').value,
+      pichaKuu: document.getElementById('picha').value, video: document.getElementById('video').value,
+      maelezoFupi: document.getElementById('fupi').value, maelezoKamili: document.getElementById('kamili').value, active: true
+    });
+    document.getElementById('saveMsg').innerText = "✓ Imehifadhiwa!";
+    document.querySelectorAll('.form-box input,.form-box textarea').forEach(i => i.value = '');
+  }
+
+  async function loadMaeneo() {
+    const snapshot = await get(child(ref(db), `maeneo`));
+    const maeneoGrid = document.getElementById('maeneoGrid');
+    maeneoGrid.innerHTML = "";
+    if(snapshot.exists()){
+      snapshot.forEach((childSnapshot) => {
+        const eneo = childSnapshot.val(); const id = childSnapshot.key;
+        if(eneo.active){ maeneoGrid.innerHTML += `<div class="eneo-card" onclick="openEneo('${id}')"><img src="${eneo.pichaKuu}" class="eneo-img"><div class="eneo-tag">${eneo.aina}</div><h3>${eneo.jina}</h3><p class="eneo-excerpt">${eneo.maelezoFupi}</p><p class="eneo-mkoa"><i class="fa-solid fa-location-dot"></i> ${eneo.mkoa}</p></div>`; }
+      });
+    } else { maeneoGrid.innerHTML = "<p>Hakuna vivutio bado. Ongeza kwenye admin</p>" }
+  }
+  loadMaeneo();
+
+  window.openEneo = async function(id) {
+    const snapshot = await get(child(ref(db), `maeneo/${id}`));
+    if(snapshot.exists()){
+      const eneo = snapshot.val();
+      document.getElementById('eneoFullContent').innerHTML = `${eneo.video? `<iframe src="${eneo.video}" class="video-frame" allowfullscreen></iframe>` : `<img src="${eneo.pichaKuu}" class="blog-full-img">`}<div class="blog-full-body"><div class="blog-tag">${eneo.aina}</div><h1>${eneo.jina}</h1><p class="eneo-mkoa"><i class="fa-solid fa-location-dot"></i> ${eneo.mkoa}</p><p style="white-space: pre-line">${eneo.maelezoKamili}</p></div>`;
+      document.getElementById('eneoModal').style.display = 'flex'; document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeEneo(){ document.getElementById('eneoModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
+  function closeAdmin(){ document.getElementById('adminModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+</script>
 </body>
 </html>
