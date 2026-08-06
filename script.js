@@ -1,4 +1,3 @@
-// CONFIG YAKO
 const firebaseConfig = {
   apiKey: "AIzaSyAUiJdxQ4Z1oQ1t-jSJ7pRU2Rif2I1ZsUU",
   authDomain: "teknova-b248b.firebaseapp.com",
@@ -13,11 +12,10 @@ const db = firebase.database();
 
 let lang = localStorage.getItem('lang') || 'sw';
 const texts = {
-  sw: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI", lang:"🌍 EN", readMore:"SOMA ZAIDI", like:"❤️", copy:"📋 NAKILI", open:"OPEN IN CHATGPT", noPrompts:"Hakuna prompts bado", copied:"Ime-Nakiliwa!", liked:"Umeshaipenda"},
-  en: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI", lang:"🌍 SW", readMore:"READ MORE", like:"❤️", copy:"📋 COPY", open:"OPEN IN CHATGPT", noPrompts:"No prompts yet", copied:"Copied!", liked:"Already Liked"}
+  sw: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI", lang:"🌍 EN", readMore:"SOMA ZAIDI", like:"❤️", copy:"📋", open:"GPT", gemini:"Gemini", noPrompts:"Hakuna prompts bado", copied:"Ime-Nakiliwa!", liked:"Umeshaipenda"},
+  en: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI", lang:"🌍 SW", readMore:"READ MORE", like:"❤️", copy:"📋", open:"GPT", gemini:"Gemini", noPrompts:"No prompts yet", copied:"Copied!", liked:"Already Liked"}
 }
 
-// TOAST BADALA YA ALERT MBAYA
 function showToast(msg){
   const toast = document.createElement('div');
   toast.innerText = msg;
@@ -47,9 +45,7 @@ function loadPrompts() {
         const item = data[key];
         const shortText = item.prompt.length > 120? item.prompt.substring(0,120)+"..." : item.prompt;
         const safePrompt = item.prompt.replace(/`/g, "'").replace(/"/g, '&quot;');
-        
-        // Angalia kama mtu amesha-like
-        const liked = localStorage.getItem('liked_'+key)? 'style="opacity:0.5; cursor:not-allowed;" disabled' : "";
+        const liked = localStorage.getItem('liked_'+key)? 'disabled' : "";
 
         container.innerHTML += `
           <div class="card">
@@ -58,9 +54,10 @@ function loadPrompts() {
             <p class="prompt-text" id="text-${key}">${shortText}</p>
             ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${safePrompt}\`)">${texts[lang].readMore}</a>` : ""}
             <div class="actions">
-              <button ${liked} onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
-              <button onclick="copyPrompt(\`${safePrompt}\`)">${texts[lang].copy}</button>
-              <button onclick="openChatGPT(\`${safePrompt}\`)">${texts[lang].open}</button>
+              <button class="btn-like" ${liked} onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
+              <button class="btn-copy" onclick="copyPrompt(\`${safePrompt}\`)">${texts[lang].copy}</button>
+              <button class="btn-gpt" onclick="openChatGPT(\`${safePrompt}\`)">${texts[lang].open}</button>
+              <button class="btn-gemini" onclick="openGemini(\`${safePrompt}\`)">${texts[lang].gemini}</button>
             </div>
           </div>
         `;
@@ -71,24 +68,14 @@ function loadPrompts() {
   });
 }
 
-// LIKE MARA MOJA TU
 function likePrompt(id, current){
-  if(localStorage.getItem('liked_'+id)) {
-    showToast(texts[lang].liked);
-    return;
-  }
+  if(localStorage.getItem('liked_'+id)) { showToast(texts[lang].liked); return; }
   db.ref('prompts/'+id+'/likes').set(current + 1);
   localStorage.setItem('liked_'+id, 'true');
   showToast(texts[lang].like);
 }
-
-// COPY NA TOAST NZURI
-function copyPrompt(text){
-  navigator.clipboard.writeText(text).then(()=>{
-    showToast(texts[lang].copied);
-  });
-}
-
+function copyPrompt(text){ navigator.clipboard.writeText(text).then(()=>{ showToast(texts[lang].copied); }); }
 function openChatGPT(text){ window.open('https://chat.openai.com/?q='+encodeURIComponent(text), '_blank'); }
+function openGemini(text){ window.open('https://gemini.google.com/app?q='+encodeURIComponent(text), '_blank'); }
 function toggleText(id, full){ document.getElementById('text-'+id).innerText = full; }
 document.addEventListener('DOMContentLoaded', applyLangPublic);
