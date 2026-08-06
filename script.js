@@ -13,34 +13,16 @@ const db = firebase.database();
 let lang = localStorage.getItem('lang') || 'sw';
 const texts = {
   sw: {
-    lib:"LIBRARY",
-    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
-    lang:"🌍 EN",
-    readMore:"Soma zaidi",
-    like:"",
-    copy:"Copy",
-    open:"Open on ChatGPT",
-    gemini:"Gemini",
-    noPrompts:"Hakuna prompts bado",
-    copied:"Ime-Nakiliwa!",
-    liked:"Umeshaipenda",
-    shared:"Ime-Share!",
-    downloaded:"Ime-Download!"
+    lib:"LIBRARY", rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
+    lang:"🌍 EN", readMore:"Soma zaidi", copy:"Copy", open:"Open on ChatGPT",
+    gemini:"Gemini", noPrompts:"Hakuna prompts bado", copied:"Ime-Nakiliwa!",
+    liked:"Umeshaipenda", shared:"Ime-Share!", downloaded:"Ime-Download!"
   },
   en: {
-    lib:"LIBRARY",
-    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
-    lang:"🌍 SW",
-    readMore:"Read more",
-    like:"",
-    copy:"Copy",
-    open:"Open on ChatGPT",
-    gemini:"Gemini",
-    noPrompts:"No prompts yet",
-    copied:"Copied!",
-    liked:"Already Liked",
-    shared:"Shared!",
-    downloaded:"Downloaded!"
+    lib:"LIBRARY", rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
+    lang:"🌍 SW", readMore:"Read more", copy:"Copy", open:"Open on ChatGPT",
+    gemini:"Gemini", noPrompts:"No prompts yet", copied:"Copied!",
+    liked:"Already Liked", shared:"Shared!", downloaded:"Downloaded!"
   }
 }
 
@@ -90,7 +72,7 @@ function loadPrompts() {
             <div class="actions">
               <button class="action-btn like-btn ${liked}" onclick="likePrompt('${key}', ${likes})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                ${likes > 0? (likes/1000).toFixed(1)+'K' : ''}
+                ${likes > 0? likes : ''}
               </button>
               <button class="action-btn" onclick="downloadImage('${item.image}', '${key}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -113,6 +95,9 @@ function loadPrompts() {
     } else {
       container.innerHTML = `<p style='text-align:center; color:#999; margin-top:20px;'>${texts[lang].noPrompts}</p>`;
     }
+  }, (error)=>{
+    console.error(error);
+    container.innerHTML = `<p style='text-align:center; color:red;'>Error: Hakuna ruhusa ya kusoma data. Angalia Firebase Rules</p>`;
   });
 }
 
@@ -124,9 +109,11 @@ function likePrompt(id, current){
 }
 
 function downloadImage(url, id){
+  if(!url) return;
   const a = document.createElement('a');
   a.href = url;
   a.download = 'nova-prompt-'+id+'.jpg';
+  a.target = '_blank';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -134,21 +121,16 @@ function downloadImage(url, id){
 }
 
 function copyPrompt(text){
-  navigator.clipboard.writeText(text).then(()=>{
-    showToast(texts[lang].copied);
-  });
+  navigator.clipboard.writeText(text).then(()=>{ showToast(texts[lang].copied); });
 }
 
 function sharePrompt(text, url){
   if (navigator.share) {
-    navigator.share({
-      title: 'Nova Soft Prompt',
-      text: text,
-      url: url
-    }).then(() => showToast(texts[lang].shared))
-  .catch(() => {});
+    navigator.share({ title: 'Nova Soft Prompt', text: text, url: url })
+   .then(() => showToast(texts[lang].shared))
+   .catch(() => {});
   } else {
-    copyPrompt(text + " + url);
+    copyPrompt(text + "\n" + url);
   }
 }
 
