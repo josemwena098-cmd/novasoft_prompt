@@ -19,7 +19,7 @@ const texts = {
 function showToast(msg){
   const toast = document.createElement('div');
   toast.innerText = msg;
-  toast.style.cssText = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#10B981; color:white; padding:12px 20px; border-radius:8px; z-index:9999; font-size:14px;`;
+  toast.style.cssText = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#10B981; color:white; padding:12px 20px; border-radius:8px; z-index:9999; font-size:14px; animation: fadeInUp 0.3s ease;`;
   document.body.appendChild(toast);
   setTimeout(()=>toast.remove(), 2000);
 }
@@ -49,10 +49,17 @@ function loadPrompts() {
 
         container.innerHTML += `
           <div class="card">
-            ${item.image? `<img src="${item.image}" class="card-img">` : ""}
-            <span class="badge">${item.category}</span>
-            <p class="prompt-text" id="text-${key}">${shortText}</p>
-            ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${safePrompt}\`)">${texts[lang].readMore}</a>` : ""}
+            ${item.image? `
+              <div class="card-img-container">
+                <img src="${item.image}" class="card-img" alt="prompt">
+                <div class="img-text-overlay">${item.category}</div>
+              </div>
+            ` : ""}
+            <div style="padding-top:15px;">
+              <span class="badge">${item.category}</span>
+              <p class="prompt-text" id="text-${key}">${shortText}</p>
+              ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${safePrompt}\`)">${texts[lang].readMore}</a>` : ""}
+            </div>
             <div class="actions">
               <button class="btn-like" ${liked} onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
               <button class="btn-copy" onclick="copyPrompt(\`${safePrompt}\`)">${texts[lang].copy}</button>
