@@ -59,6 +59,7 @@ function loadPrompts() {
     }
     renderCategories([...categories]);
     renderPrompts();
+    loadMonetagBanner(); // ITAITA BANNER BAADA YA CARDS
   });
 }
 
@@ -162,10 +163,19 @@ function copyPrompt(text){ navigator.clipboard.writeText(text).then(()=>{ showTo
 function sharePrompt(text, url){
   if (navigator.share) {
     navigator.share({ title: 'Nova Soft Prompt', text: text, url: url })
-  .then(() => showToast(texts[lang].shared))
-  .catch(() => {});
+ .then(() => showToast(texts[lang].shared))
+ .catch(() => {});
   } else { copyPrompt(text + "\n" + url); }
 }
 function openChatGPT(text){ window.open('https://chat.openai.com/?q='+encodeURIComponent(text), '_blank'); }
 function openGemini(text){ window.open('https://gemini.google.com/app?q='+encodeURIComponent(text), '_blank'); }
+
+// ========== MONETAG BANNER AD ==========
+function loadMonetagBanner() {
+    const bannerDiv = document.getElementById('bannerAd');
+    if(bannerDiv){
+        bannerDiv.innerHTML = `<script src='//5gvci.com/11519259.js'></script>`;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', applyLangPublic);
