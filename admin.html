@@ -8,6 +8,9 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <style>
+   .error-box{color:red; text-align:center; margin-top:10px; font-size:14px;}
+  </style>
 </head>
 <body>
   <div class="container">
@@ -19,10 +22,11 @@
         <input type="email" id="adminEmail" placeholder="Email">
         <input type="password" id="adminPass" placeholder="Password">
         <button onclick="loginAdmin()" id="loginBtn">Ingia</button>
+        <div class="error-box" id="errorBox"></div>
       </div>
     </div>
 
-    <!-- SEHEMU 2: ADMIN DASHBOARD - Imefichwa mwanzo -->
+    <!-- SEHEMU 2: ADMIN DASHBOARD -->
     <div id="adminSection" style="display:none;">
       <header class="topbar">
         <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
@@ -44,15 +48,15 @@
   </div>
 
   <script>
-    // WEKA FIREBASE CONFIG YAKO HAPA
+    // === MUHIMU: WEKA FIREBASE CONFIG YAKO HALISI HAPA ===
     const firebaseConfig = {
-      apiKey: "AIzaSy...",
+      apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxx", // NAKILI YAKO KUTOKA FIREBASE
       authDomain: "teknova-3688d.firebaseapp.com",
       databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
       projectId: "teknova-3688d",
       storageBucket: "teknova-3688d.appspot.com",
-      messagingSenderId: "...",
-      appId: "..."
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:xxxxxxxxxxxxx"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -65,13 +69,13 @@
         loginTitle:"Admin Login", email:"Email", pass:"Neno la Siri", loginBtn:"Ingia",
         dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha",
         prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN",
-        success:"Imehifadhiwa!", error:"Email au Password si sahihi!"
+        success:"Imehifadhiwa!"
       },
       en: {
         loginTitle:"Admin Login", email:"Email", pass:"Password", loginBtn:"Login",
         dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link",
         prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW",
-        success:"Saved!", error:"Email or Password is incorrect!"
+        success:"Saved!"
       }
     }
 
@@ -80,7 +84,6 @@
       document.getElementById('adminEmail').placeholder = texts[lang].email;
       document.getElementById('adminPass').placeholder = texts[lang].pass;
       document.getElementById('loginBtn').innerText = texts[lang].loginBtn;
-
       document.getElementById('dashTitle').innerHTML = texts[lang].dash;
       document.getElementById('addTitle').innerText = texts[lang].add;
       document.getElementById('category').placeholder = texts[lang].cat;
@@ -101,46 +104,40 @@
     // ANGALIA KAMA TAYARI AMELOGIN
     auth.onAuthStateChanged(user => {
       if (user) {
-        // Onyesha Dashboard
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('adminSection').style.display = 'block';
       } else {
-        // Onyesha Login
         document.getElementById('loginSection').style.display = 'block';
         document.getElementById('adminSection').style.display = 'none';
       }
     });
 
-    // FUNCTION YA LOGIN
+    // FUNCTION YA LOGIN - IKO NA ERROR DETAIL
     function loginAdmin(){
-      const email = document.getElementById('adminEmail').value;
-      const pass = document.getElementById('adminPass').value;
-      if(!email ||!pass){ alert("Jaza yote"); return; }
+      document.getElementById('errorBox').innerText = "";
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass = document.getElementById('adminPass').value.trim();
+      if(!email ||!pass){ document.getElementById('errorBox').innerText = "Jaza Email na Password"; return; }
 
       auth.signInWithEmailAndPassword(email, pass)
    .catch((error) => {
-        alert(texts[lang].error);
+        // HII ITAONYESHA SHIDA HALISI
+        document.getElementById('errorBox').innerText = "Error: " + error.code + " - " + error.message;
       });
     }
 
     // FUNCTION YA LOGOUT
-    function logout(){
-      auth.signOut();
-    }
+    function logout(){ auth.signOut(); }
 
     // FUNCTION YA KUHIFADHI PROMPT
     function savePrompt() {
-      const category = document.getElementById('category').value;
-      const prompt = document.getElementById('prompt').value;
-      const imageLink = document.getElementById('imageLink').value;
+      const category = document.getElementById('category').value.trim();
+      const prompt = document.getElementById('prompt').value.trim();
+      const imageLink = document.getElementById('imageLink').value.trim();
       if(!category ||!prompt) { alert("Jaza Category na Prompt"); return; }
 
       db.ref('prompts').push({
-        category: category,
-        prompt: prompt,
-        image: imageLink,
-        likes: 25,
-        createdAt: Date.now()
+        category, prompt, image:imageLink, likes: 25, createdAt: Date.now()
       }).then(() => {
         alert(texts[lang].success);
         document.getElementById('category').value = "";
