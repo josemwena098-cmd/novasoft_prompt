@@ -1,244 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --bg: #0A0A0F;
+  --card: #12121A;
+  --accent: #00F5D4;
+  --text: #E5E5E5;
+  --muted: #888;
 }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+body { background:var(--bg); color:var(--text); }
 
-body { 
-  background: #000000; 
-  color: #ffffff; 
-  font-family: 'Poppins', sans-serif;
-  min-height: 100vh;
-}
+.container { max-width:700px; margin:0 auto; padding:20px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
 
-/* TOPBAR */
-.topbar { 
-  display: flex; 
-  justify-content: space-between; 
-  padding: 15px 20px; 
-  background: #0a0a0a; 
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid #1a1a1a;
-}
-.logo { 
-  display: flex; 
-  gap: 12px; 
-  align-items: center; 
-}
-.logo span { font-size: 28px; }
-.logo small { 
-  color: #888; 
-  font-size: 10px; 
-  letter-spacing: 2px;
-}
-.logo h2 { 
-  margin: 0; 
-  font-size: 20px; 
-  font-weight: 700;
-}
-.logo h2 span { 
-  color: #00f5d4; 
-}
-.lang { 
-  background: #111; 
-  border: 1px solid #00f5d4; 
-  color: #00f5d4; 
-  padding: 8px 14px; 
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-}
+.logo { display:flex; align-items:center; gap:10px; }
+.logo img { width:40px; height:40px; }
+.logo-text h4 { font-size:12px; color:var(--muted); font-weight:400; letter-spacing:2px; }
+.logo-text h2 { font-size:22px; font-weight:700; }
+.logo-text h2 span { color:var(--accent); }
 
-/* CONTAINER */
-.container { 
-  padding: 20px; 
-  max-width: 650px; 
-  margin: auto; 
-}
+.lang { background:transparent; border:1px solid var(--accent); color:var(--accent); padding:8px 14px; border-radius:10px; font-weight:600; cursor:pointer; }
 
-/* FORM - INATUMIKA ADMIN NA PUBLIC */
-.form-box { 
-  background: #0f0f0f; 
-  padding: 20px; 
-  border-radius: 16px; 
-  margin-bottom: 30px;
-  border: 1px solid #1a1a1a;
-}
-.form-box h3 {
-  margin-bottom: 15px;
-  color: #00f5d4;
-  font-size: 20px;
-}
-.form-box input,
-.form-box textarea { 
-  width: 100%; 
-  padding: 14px; 
-  margin: 10px 0; 
-  background: #1a1a1a; 
-  border: 1px solid #222; 
-  color: #fff; 
-  border-radius: 10px;
-  font-size: 14px;
-  outline: none;
-}
-.form-box input::placeholder,
-.form-box textarea::placeholder {
-  color: #666;
-}
-.form-box input:focus,
-.form-box textarea:focus {
-  border: 1px solid #00f5d4;
-}
-.form-box textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-.form-box button { 
-  width: 100%; 
-  padding: 14px; 
-  background: #00f5d4; 
-  border: none; 
-  border-radius: 10px; 
-  font-weight: 700;
-  font-size: 15px;
-  color: #000;
-  cursor: pointer;
-  margin-top: 10px;
-}
-.form-box button:hover {
-  background: #00d4b8;
-}
+.grid { display:grid; gap:20px; }
+.card { background:var(--card); border-radius:16px; padding:0; overflow:hidden; border:1px solid #1f1f2e; }
+.card-img { width:100%; height:220px; object-fit:cover; }
+.badge { background:var(--accent); color:#000; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; margin:15px; display:inline-block; }
+.prompt-text { padding:0 15px; font-size:14px; color:#ccc; line-height:1.6; }
+.card a { color:var(--accent); font-size:13px; font-weight:600; padding:0 15px; display:block; margin:10px 0; cursor:pointer; }
 
-/* CARD YA PROMPT */
-.card { 
-  background: #0f0f0f; 
-  border-radius: 18px; 
-  padding: 0; 
-  margin-bottom: 25px; 
-  border: 1px solid #1a1a1a;
-  overflow: hidden;
-}
-.card-img { 
-  width: 100%; 
-  height: 300px;
-  object-fit: cover;
-  display: block;
-}
-.badge { 
-  background: #00f5d4; 
-  color: #000; 
-  padding: 6px 14px; 
-  border-radius: 20px; 
-  font-size: 12px; 
-  font-weight: 700;
-  display: inline-block;
-  margin: 15px 0 0 15px;
-  text-transform: uppercase;
-}
-.prompt-text { 
-  margin: 12px 15px; 
-  color: #ccc; 
-  font-size: 14px;
-  line-height: 1.6;
-  word-break: break-word;
-}
-.card > a { 
-  color: #00f5d4; 
-  cursor: pointer; 
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0 15px 15px;
-  display: inline-block;
-}
-
-/* BUTTONS ZA CARD */
-.actions { 
-  display: flex; 
-  gap: 12px; 
-  padding: 15px;
-  border-top: 1px solid #1a1a1a;
-}
+.actions { display:flex; gap:8px; padding:15px; border-top:1px solid #1f1f2e; margin-top:10px; }
 .actions button { 
-  flex: 1; 
-  padding: 12px; 
-  border: none; 
-  border-radius: 10px; 
-  background: #1a1a1a; 
-  color: #fff; 
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
+  flex:1; padding:10px 8px; border:none; border-radius:10px; 
+  font-size:12px; font-weight:600; cursor:pointer; 
+  display:flex; align-items:center; justify-content:center; gap:5px;
 }
-.actions button:nth-child(1) {
-  background: transparent;
-  color: #ff4d6d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-.actions button:nth-child(2) {
-  background: #1a1a1a;
-}
-.actions button:nth-child(3) {
-  background: #00f5d4;
-  color: #000;
-}
-.actions button:hover { 
-  opacity: 0.8; 
-}
+.btn-like { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+.btn-copy { background:#1f1f2e; color:var(--text); }
+.btn-gpt { background:#10A37F; color:white; }
+.btn-gemini { background:#4285F4; color:white; }
+.actions button:disabled { opacity:0.4; }
 
-/* FOOTER */
-footer { 
-  text-align: center; 
-  padding: 40px 20px; 
-  margin-top: 40px;
-  border-top: 1px solid #1a1a1a;
-}
-.share-btns { 
-  display: flex; 
-  gap: 12px; 
-  justify-content: center; 
-  margin-bottom: 20px; 
-}
-.wa { 
-  background: #25D366; 
-  padding: 12px 24px; 
-  border-radius: 25px; 
-  color: #fff; 
-  text-decoration: none;
-  font-weight: 600;
-}
-.fb { 
-  background: #1877F2; 
-  padding: 12px 24px; 
-  border-radius: 25px; 
-  color: #fff; 
-  text-decoration: none;
-  font-weight: 600;
-}
-footer h2 { 
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-footer h2 span { 
-  color: #00f5d4; 
-}
-footer p { 
-  font-size: 12px; 
-  color: #666; 
-}
-
-/* LOGIN BOX YA ADMIN */
-#loginBox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 80vh;
-}
+footer { text-align:center; margin-top:40px; padding:20px; font-size:12px; color:var(--muted); }
+footer a { color:var(--accent); text-decoration:none; margin:0 5px; }
