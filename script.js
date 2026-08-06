@@ -1,3 +1,4 @@
+// WEKA FIREBASE CONFIG YAKO HAPA
 const firebaseConfig = {
   apiKey: "AIzaSy...",
   authDomain: "teknova-3688d.firebaseapp.com",
@@ -10,34 +11,54 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// FUNCTION YA KUHIFADHI - INATUMIKA ADMIN.HTML TU
-function savePrompt() {
-  const category = document.getElementById('category').value;
-  const prompt = document.getElementById('prompt').value;
-  const imageLink = document.getElementById('imageLink').value;
-
-  if(!category ||!prompt) { alert("Jaza Category na Prompt"); return; }
-
-  db.ref('prompts').push({
-    category: category,
-    prompt: prompt,
-    image: imageLink,
-    likes: 25, // automatic like 25
-    createdAt: Date.now()
-  }).then(() => {
-    alert("Prompt Imehifadhiwa!");
-    document.getElementById('category').value = "";
-    document.getElementById('prompt').value = "";
-    document.getElementById('imageLink').value = "";
-  });
+// LUGHA
+let lang = localStorage.getItem('lang') || 'sw';
+const texts = {
+  sw: {
+    lib:"LIBRARY",
+    wa:"WhatsApp",
+    fb:"Facebook",
+    rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI",
+    lang:"🌍 EN",
+    readMore:"SOMA ZAIDI",
+    like:"❤️",
+    copy:"📋 NAKILI",
+    open:"OPEN IN CHATGPT"
+  },
+  en: {
+    lib:"LIBRARY",
+    wa:"WhatsApp",
+    fb:"Facebook",
+    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
+    lang:"🌍 SW",
+    readMore:"READ MORE",
+    like:"❤️",
+    copy:"📋 COPY",
+    open:"OPEN IN CHATGPT"
+  }
 }
 
-// FUNCTION YA KUSOMA - INATUMIKA INDEX.HTML
+function applyLangPublic(){
+  document.getElementById('libText').innerText = texts[lang].lib;
+  document.querySelector('.wa').innerText = texts[lang].wa;
+  document.querySelector('.fb').innerText = texts[lang].fb;
+  document.getElementById('footerText').innerText = texts[lang].rights;
+  document.getElementById('langBtn').innerText = texts[lang].lang;
+  loadPrompts(); // reload prompts na lugha mpya
+}
+
+function changeLang(){
+  lang = lang === 'sw'? 'en' : 'sw';
+  localStorage.setItem('lang', lang);
+  applyLangPublic();
+}
+
+// KUSOMA PROMPTS KUTOKA FIREBASE
 function loadPrompts() {
   const container = document.getElementById('promptsList');
-  if(!container) return; // kama uko admin.html isirun
+  if(!container) return;
 
-  db.ref('prompts').on('value', (snapshot) => {
+  db.ref('prompts').orderByChild('createdAt').on('value', (snapshot) => {
     const data = snapshot.val();
     container.innerHTML = "";
     if(data){
@@ -49,16 +70,18 @@ function loadPrompts() {
             ${item.image? `<img src="${item.image}" class="card-img">` : ""}
             <span class="badge">${item.category}</span>
             <p class="prompt-text" id="text-${key}">${shortText}</p>
-            ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${item.prompt}\`)">SOMA ZAIDI</a>` : ""}
+            ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${item.prompt.replace(/`/g, "'")}\`)">${texts[lang].readMore}</a>` : ""}
 
             <div class="actions">
-              <button onclick="likePrompt('${key}', ${item.likes})">❤️ ${item.likes}</button>
-              <button onclick="copyPrompt(\`${item.prompt}\`)">📋 NAKILI</button>
-              <button onclick="window.open('https://chat.openai.com/?q='+encodeURIComponent(\`${item.prompt}\`))">OPEN IN CHATGPT</button>
+              <button onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
+              <button onclick="copyPrompt(\`${item.prompt.replace(/`/g, "'")}\`)">${texts[lang].copy}</button>
+              <button onclick="window.open('https://chat.openai.com/?q='+encodeURIComponent(\`${item.prompt.replace(/`/g, "'")}\`))">${texts[lang].open}</button>
             </div>
           </div>
         `;
       });
+    } else {
+      container.innerHTML = "<p style='text-align:center; color:#666;'>Hakuna prompts bado</p>";
     }
   });
 }
@@ -69,11 +92,12 @@ function likePrompt(id, current){
 
 function copyPrompt(text){
   navigator.clipboard.writeText(text);
-  alert("Imenakiliwa!");
+  alert(lang==='sw'? "Imenakiliwa!" : "Copied!");
 }
 
 function toggleText(id, full){
   document.getElementById('text-'+id).innerText = full;
 }
 
-loadPrompts();
+// RUN
+applyLangPublic();
