@@ -12,8 +12,36 @@ const db = firebase.database();
 
 let lang = localStorage.getItem('lang') || 'sw';
 const texts = {
-  sw: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI", lang:"🌍 EN", readMore:"SOMA ZAIDI", like:"❤️", copy:"📋", open:"GPT", gemini:"Gemini", noPrompts:"Hakuna prompts bado", copied:"Ime-Nakiliwa!", liked:"Umeshaipenda"},
-  en: {lib:"LIBRARY", wa:"WhatsApp", fb:"Facebook", rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI", lang:"🌍 SW", readMore:"READ MORE", like:"❤️", copy:"📋", open:"GPT", gemini:"Gemini", noPrompts:"No prompts yet", copied:"Copied!", liked:"Already Liked"}
+  sw: {
+    lib:"LIBRARY", 
+    rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI", 
+    lang:"🌍 EN", 
+    readMore:"SOMA ZAIDI", 
+    like:"❤️", 
+    copy:"📋", 
+    share:"📤", 
+    open:"Open on ChatGPT", 
+    gemini:"Gemini", 
+    noPrompts:"Hakuna prompts bado", 
+    copied:"Ime-Nakiliwa!", 
+    liked:"Umeshaipenda", 
+    shared:"Ime-Share!"
+  },
+  en: {
+    lib:"LIBRARY", 
+    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI", 
+    lang:"🌍 SW", 
+    readMore:"READ MORE", 
+    like:"❤️", 
+    copy:"📋", 
+    share:"📤", 
+    open:"Open on ChatGPT", 
+    gemini:"Gemini", 
+    noPrompts:"No prompts yet", 
+    copied:"Copied!", 
+    liked:"Already Liked", 
+    shared:"Shared!"
+  }
 }
 
 function showToast(msg){
@@ -26,8 +54,6 @@ function showToast(msg){
 
 function applyLangPublic(){
   if(document.getElementById('libText')) document.getElementById('libText').innerText = texts[lang].lib;
-  if(document.querySelector('.wa')) document.querySelector('.wa').innerText = texts[lang].wa;
-  if(document.querySelector('.fb')) document.querySelector('.fb').innerText = texts[lang].fb;
   if(document.getElementById('footerText')) document.getElementById('footerText').innerText = texts[lang].rights;
   if(document.getElementById('langBtn')) document.getElementById('langBtn').innerText = texts[lang].lang;
   loadPrompts();
@@ -46,9 +72,10 @@ function loadPrompts() {
         const shortText = item.prompt.length > 120? item.prompt.substring(0,120)+"..." : item.prompt;
         const safePrompt = item.prompt.replace(/`/g, "'").replace(/"/g, '&quot;');
         const liked = localStorage.getItem('liked_'+key)? 'disabled' : "";
+        const currentUrl = window.location.href + '#prompt-' + key;
 
         container.innerHTML += `
-          <div class="card">
+          <div class="card" id="prompt-${key}">
             ${item.image? `
               <div class="card-img-container">
                 <img src="${item.image}" class="card-img" alt="prompt">
@@ -63,6 +90,7 @@ function loadPrompts() {
             <div class="actions">
               <button class="btn-like" ${liked} onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
               <button class="btn-copy" onclick="copyPrompt(\`${safePrompt}\`)">${texts[lang].copy}</button>
+              <button class="btn-share" onclick="sharePrompt(\`${safePrompt}\`, '${currentUrl}')">${texts[lang].share}</button>
               <button class="btn-gpt" onclick="openChatGPT(\`${safePrompt}\`)">${texts[lang].open}</button>
               <button class="btn-gemini" onclick="openGemini(\`${safePrompt}\`)">${texts[lang].gemini}</button>
             </div>
@@ -81,7 +109,26 @@ function likePrompt(id, current){
   localStorage.setItem('liked_'+id, 'true');
   showToast(texts[lang].like);
 }
-function copyPrompt(text){ navigator.clipboard.writeText(text).then(()=>{ showToast(texts[lang].copied); }); }
+
+function copyPrompt(text){ 
+  navigator.clipboard.writeText(text).then(()=>{ 
+    showToast(texts[lang].copied); 
+  }); 
+}
+
+function sharePrompt(text, url){
+  if (navigator.share) {
+    navigator.share({
+      title: 'Nova Soft Prompt',
+      text: text,
+      url: url
+    }).then(() => showToast(texts[lang].shared))
+   .catch(() => {});
+  } else {
+    copyPrompt(text);
+  }
+}
+
 function openChatGPT(text){ window.open('https://chat.openai.com/?q='+encodeURIComponent(text), '_blank'); }
 function openGemini(text){ window.open('https://gemini.google.com/app?q='+encodeURIComponent(text), '_blank'); }
 function toggleText(id, full){ document.getElementById('text-'+id).innerText = full; }
