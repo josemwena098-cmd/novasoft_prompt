@@ -1,120 +1,39 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova Soft Prompt - Maktaba ya AI Prompts</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Soft - Prompt Library</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-<div id="particles"></div>
 
-<!-- NOTICE BAR -->
-<div class="notice-bar">
-  <div class="notice-content">
-    <span data-sw="⚠️ KUMBUKA: Ili kutumia ChatGPT lazima uwe na Account. Ukibonyeza 'Open in ChatGPT' hakikisha umeupload picha ya kwanza ndipo uedit" 
-          data-en="⚠️ NOTE: To use ChatGPT you must have an Account. When you click 'Open in ChatGPT' make sure to upload your first image for it to edit">
-      ⚠️ KUMBUKA: Ili kutumia ChatGPT lazima uwe na Account. Ukibonyeza 'Open in ChatGPT' hakikisha umeupload picha ya kwanza ndipo uedit
-    </span>
-  </div>
-</div>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo-area" onclick="window.location.reload()">
-    <i class="fa-solid fa-robot logo-icon"></i>
-    <div>
-      <div class="logo-small">NOVA SOFT</div>
-      <div class="logo-big">PROMPT <span>LIBRARY</span></div>
-    </div>
-  </div>
-  <button class="btn-lang" onclick="toggleLanguage()"><i class="fa-solid fa-globe"></i> <span id="langText">EN</span></button>
-</nav>
-
-<!-- HERO + SEARCH -->
-<header class="hero">
-  <h1 data-sw="Maktaba ya <span>AI Prompts</span>" data-en="Library of <span>AI Prompts</span>">Maktaba ya <span>AI Prompts</span></h1>
-  <p class="subtitle" data-sw="Nakili prompt pro, bandika kwenye ChatGPT. Hakikisha umeupload picha yako kwanza" data-en="Copy pro prompts, paste in ChatGPT. Make sure to upload your image first">
-    Nakili prompt pro, bandika kwenye ChatGPT. Hakikisha umeupload picha yako kwanza
-  </p>
-  <div class="search-box">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" id="searchInput" data-sw-placeholder="Tafuta prompt: mfano 'cinematic portrait'" data-en-placeholder="Search prompt: e.g 'cinematic portrait'" placeholder="Tafuta prompt: mfano 'cinematic portrait'">
-  </div>
-</header>
-
-<!-- HIGHLIGHT -->
-<section class="highlight-section">
-  <div class="highlight-card"><h3><i class="fa-solid fa-fire"></i> <span data-sw="TRENDING" data-en="TRENDING">TRENDING</span></h3><div id="trendingList"></div></div>
-  <div class="highlight-card"><h3><i class="fa-solid fa-clock"></i> <span data-sw="LATEST" data-en="LATEST">LATEST</span></h3><div id="latestList"></div></div>
-</section>
-
-<!-- FILTER -->
-<section id="filterSection" class="filter-section"><button class="filter-btn active"><i class="fa-solid fa-spinner fa-spin"></i> INAPAKIA...</button></section>
-
-<!-- PROMPT GRID -->
-<main class="prompt-grid" id="promptGrid"><p style="text-align:center; grid-column:1/-1; color:#aaa">Inapakia prompts...</p></main>
-
-<!-- FOOTER -->
-<footer>
-  <div class="social-links">
-    <a href="https://wa.me/255611378027" target="_blank" class="social-btn whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-    <a href="https://www.facebook.com/profile.php?id=61592226807555" target="_blank" class="social-btn facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
-  </div>
-  <div class="logo-footer" onclick="openAdmin()" title="Admin Access">NOVA <span>SOFT</span> <i class="fa-solid fa-shield-halved" style="font-size:12px; opacity:0.3"></i></div>
-  <p>© 2026 Nova Soft. All Rights Reserved. Powered by AI</p>
-</footer>
-
-<!-- ADMIN MODAL PRO -->
-<div id="adminModal" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeAdmin()">&times;</span>
-    
-    <div id="loginBox">
-      <h2 style="text-align:center; margin-bottom:20px; color:var(--primary)"><i class="fa-solid fa-user-shield"></i> <span data-sw="Admin Login" data-en="Admin Login">Admin Login</span></h2>
-      <div class="input-group"><i class="fa-solid fa-envelope"></i><input id="email" type="email" placeholder="Email"></div>
-      <div class="input-group"><i class="fa-solid fa-lock"></i><input id="pass" type="password" placeholder="Password"></div>
-      <button class="btn-login" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> <span data-sw="INGIA" data-en="LOGIN">INGIA</span></button>
-      <p id="loginError"></p>
-    </div>
-
-    <div id="dashboard" style="display:none;">
-      <div class="dashboard-header">
-        <h2><i class="fa-solid fa-circle-nodes"></i> <span data-sw="Admin Dashboard" data-en="Admin Dashboard">Admin Dashboard</span></h2>
-        <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span data-sw="Toka" data-en="Logout">Logout</span></button>
-      </div>
-
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-sw="Ongeza Prompt Mpya" data-en="Add New Prompt">Add New Prompt</span></h3>
-        
-        <label data-sw="Chagua aina iliyopo:" data-en="Select existing category:">Select existing category:</label>
-        <select id="cat"></select>
-        
-        <label data-sw="Au andika aina mpya hapa:" data-en="Or type new category here:">Or type new category here:</label>
-        <input id="newCatTemp" type="text" placeholder="mfano: fashion">
-        
-        <label data-sw="Bandika Prompt Kamili:" data-en="Paste Full Prompt:">Bandika Prompt Kamili:</label>
-        <textarea id="promptText" rows="5" placeholder="Bandika prompt kamili hapa..."></textarea>
-        
-        <label data-sw="Link ya Picha:" data-en="Image Link:">Link ya Picha:</label>
-        <input id="imgLink" type="text" placeholder="Weka link ya picha ya mfano">
-        
-        <button class="btn-save" onclick="savePrompt()">
-          <i class="fa-solid fa-pen-to-square"></i> 
-          <span data-sw="HAZIFA PROMPT" data-en="SAVE PROMPT">SAVE PROMPT</span>
-        </button>
-        <p id="saveMsg"></p>
-      </div>
-
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-list-check"></i> <span data-sw="Prompts Zilizopo" data-en="Existing Prompts">Existing Prompts</span></h3>
-        <div id="adminPromptList"></div>
+  <header class="topbar">
+    <div class="logo">
+      <span>🤖</span>
+      <div>
+        <small>NOVA SOFT</small>
+        <h2>PROMPT <span>LIBRARY</span></h2>
       </div>
     </div>
-  </div>
-</div>
+    <a href="admin.html" class="lang">🌍 EN</a>
+  </header>
 
-<script type="module" src="script.js"></script>
+  <div class="container">
+    <div id="promptsList"></div>
+  </div>
+
+  <footer>
+    <div class="share-btns">
+      <a href="#" class="wa">WhatsApp</a>
+      <a href="#" class="fb">Facebook</a>
+    </div>
+    <h2>NOVA <span>SOFT</span></h2>
+    <p>© 2026 Nova Soft. All Rights Reserved. Powered by AI</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
