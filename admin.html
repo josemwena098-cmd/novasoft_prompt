@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
+      <div>
+        <button onclick="changeLang()" class="lang" id="langBtn">🌍 EN</button>
+        <button onclick="logout()" class="lang" id="logoutBtn">Toka</button>
+      </div>
+    </header>
+
+    <div class="form-box">
+      <h3 id="addTitle">Ongeza Prompt Mpya</h3>
+      <input type="text" id="category" placeholder="Category">
+      <input type="text" id="imageLink" placeholder="Link ya Picha">
+      <textarea id="prompt" placeholder="Andika Prompt yako kamili..."></textarea>
+      <button onclick="savePrompt()" id="saveBtn">Hifadhi Prompt</button>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = { /* WEKA CONFIG YAKO HAPA */ };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // KAMA HAJALOGIN TUMA NYUMA
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "admin-login.html";
+      }
+    });
+
+    let lang = localStorage.getItem('lang') || 'sw';
+    const texts = {
+      sw: {dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha", prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN", success:"Imehifadhiwa!"},
+      en: {dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link", prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW", success:"Saved!"}
+    }
+    function applyLang(){
+      document.getElementById('dashTitle').innerText = texts[lang].dash;
+      document.getElementById('addTitle').innerText = texts[lang].add;
+      document.getElementById('category').placeholder = texts[lang].cat;
+      document.getElementById('imageLink').placeholder = texts[lang].img;
+      document.getElementById('prompt').placeholder = texts[lang].prompt;
+      document.getElementById('saveBtn').innerText = texts[lang].save;
+      document.getElementById('logoutBtn').innerText = texts[lang].logout;
+      document.getElementById('langBtn').innerText = texts[lang].lang;
+    }
+    applyLang();
+
+    function changeLang(){
+      lang = lang === 'sw'? 'en' : 'sw';
+      localStorage.setItem('lang', lang);
+      applyLang();
+    }
+
+    function logout(){
+      auth.signOut().then(()=>{ window.location.href = "admin-login.html"; });
+    }
+
+    function savePrompt() {
+      const category = document.getElementById('category').value;
+      const prompt = document.getElementById('prompt').value;
+      const imageLink = document.getElementById('imageLink').value;
+      if(!category ||!prompt) { alert("Jaza yote"); return; }
+      db.ref('prompts').push({category, prompt, image:imageLink, likes:25, createdAt:Date.now()})
+    .then(() => { alert(texts[lang].success); document.getElementById('category').value = ""; document.getElementById('prompt').value = ""; document.getElementById('imageLink').value = ""; });
+    }
+  </script>
+</body>
+</html>
