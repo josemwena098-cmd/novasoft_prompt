@@ -44,7 +44,6 @@ body { background:var(--bg); color:var(--text); }
   gap:20px; 
   grid-template-columns: 1fr; /* default simu = 1 column */
 } 
-/* Tablet na Desktop */
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: 1fr 1fr; /* tablet/desktop = 2 columns */
@@ -58,6 +57,7 @@ body { background:var(--bg); color:var(--text); }
   border:1px solid var(--border);
   overflow:hidden;
   animation: fadeInUp 0.4s ease;
+  padding:0; /* default ya main site */
 }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(10px); }
@@ -101,3 +101,28 @@ footer { text-align:center; margin-top:30px; padding:20px; }
 .wa-btn { background:#25D366; color:white; }
 .fb-btn { background:#1877F2; color:white; }
 #footerText { font-size:11px; color:var(--muted); }
+
+/* ================== ADMIN STYLE IMEFIX ================== */
+.btn-logout {
+  background:#F5F5F5; border:1px solid var(--border); color:var(--text);
+  padding:8px 14px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;
+}
+.btn-logout:hover { background:#E5E5E5; }
+
+.btn-primary {
+  width:100%; background:var(--accent); color:white; border:none;
+  padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer;
+  transition:0.2s; margin-top:10px;
+}
+.btn-primary:hover { opacity:0.9; }
+
+h2 { font-size:24px; font-weight:700; margin-bottom:16px; }
+.form-group { margin-bottom:16px; display:flex; flex-direction:column; }
+.form-group label { display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px; }
+.form-group input,.form-group textarea {
+  width:100%; padding:12px; border:1px solid var(--border); border-radius:8px;
+  font-size:14px; background:#FA; color:var(--text);
+}
+.form-group input:focus,.form-group textarea:focus {
+  outline:none; border-color:var(--accent); background:white;
+}
