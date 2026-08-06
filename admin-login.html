@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+  <div class="container" id="loginBox">
+    <div class="form-box">
+      <h3 id="loginTitle">Admin Login</h3>
+      <input type="email" id="adminEmail" placeholder="Email">
+      <input type="password" id="adminPass" placeholder="Password">
+      <button onclick="loginAdmin()" id="loginBtn">Ingia</button>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = { /* WEKA CONFIG YAKO HAPA */ };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    let lang = localStorage.getItem('lang') || 'sw';
+    const texts = {
+      sw: {title:"Admin Login", email:"Email", pass:"Neno la Siri", btn:"Ingia", error:"Email au Password si sahihi!"},
+      en: {title:"Admin Login", email:"Email", pass:"Password", btn:"Login", error:"Email or Password is incorrect!"}
+    }
+    document.getElementById('loginTitle').innerText = texts[lang].title;
+    document.getElementById('adminEmail').placeholder = texts[lang].email;
+    document.getElementById('adminPass').placeholder = texts[lang].pass;
+    document.getElementById('loginBtn').innerText = texts[lang].btn;
+
+    function loginAdmin(){
+      const email = document.getElementById('adminEmail').value;
+      const pass = document.getElementById('adminPass').value;
+
+      auth.signInWithEmailAndPassword(email, pass)
+     .then(() => {
+        window.location.href = "admin.html";
+      })
+     .catch((error) => {
+        alert(texts[lang].error);
+      });
+    }
+  </script>
+</body>
+</html>
