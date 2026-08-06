@@ -1,12 +1,13 @@
-// === WEKA FIREBASE CONFIG YAKO HAPA PIA ===
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxx", // NAKILI YAKO KUTOKA FIREBASE
+  apiKey: "AIzaSyDbYznd_wEyJPr_r1mnvUEy651QPhhk4TI",
   authDomain: "teknova-3688d.firebaseapp.com",
   databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
   projectId: "teknova-3688d",
-  storageBucket: "teknova-3688d.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:xxxxxxxxxxxxx"
+  storageBucket: "teknova-3688d.firebasestorage.app",
+  messagingSenderId: "1030215294939",
+  appId: "1:1030215294939:web:4d82493402600f4285d1fe",
+  measurementId: "G-XTL8QCFMWW"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
@@ -42,11 +43,16 @@ const texts = {
 
 // FUNCTION YA KUBADILISHA LUGHA
 function applyLangPublic(){
-  document.getElementById('libText').innerText = texts[lang].lib;
-  document.querySelector('.wa').innerText = texts[lang].wa;
-  document.querySelector('.fb').innerText = texts[lang].fb;
-  document.getElementById('footerText').innerText = texts[lang].rights;
-  document.getElementById('langBtn').innerText = texts[lang].lang;
+  const libText = document.getElementById('libText');
+  const langBtn = document.getElementById('langBtn');
+  const footerText = document.getElementById('footerText');
+
+  if(libText) libText.innerText = texts[lang].lib;
+  if(document.querySelector('.wa')) document.querySelector('.wa').innerText = texts[lang].wa;
+  if(document.querySelector('.fb')) document.querySelector('.fb').innerText = texts[lang].fb;
+  if(footerText) footerText.innerText = texts[lang].rights;
+  if(langBtn) langBtn.innerText = texts[lang].lang;
+
   loadPrompts(); // reload prompts na lugha mpya
 }
 
