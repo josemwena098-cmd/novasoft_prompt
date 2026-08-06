@@ -20,11 +20,12 @@ body { background:var(--bg); color:var(--text); }
 .logo-text h2 { font-size:20px; font-weight:700; }
 .logo-text h2 span { color:var(--accent); }
 
+.header-actions { display:flex; gap:8px; }
 .lang { background:#F5F5F5; border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; }
 
 .grid { display:grid; gap:24px; }
 
-/* CARD STYLE MPYA KAMA PICHA YAKO */
+/* CARD STYLE YA MAIN SITE */
 .card {
   background:var(--card);
   border-radius:12px;
@@ -37,14 +38,14 @@ body { background:var(--bg); color:var(--text); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* PICHA SQUARE KAMA ILE */
+/* PICHA SQUARE */
 .card-img-container { position: relative; width: 100%; padding-top: 100%; background: #F0F0F0; }
 .card-img {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* IJAZE SQUARE */
+  object-fit: cover;
   border-radius: 12px 12px 0 0;
 }
 
@@ -58,7 +59,7 @@ body { background:var(--bg); color:var(--text); }
 .action-btn { background:none; border:none; display:flex; align-items:center; gap:6px; font-size:14px; font-weight:500; color:var(--text); cursor:pointer; padding:6px; }
 .action-btn svg { width:24px; height:24px; }
 .action-btn:hover { opacity:0.6; }
-.like-btn.liked svg { fill: #FF3040; stroke: #FF3040; }
+.like-btn.liked svg { fill: #FF3040; stroke: #FF3040; color: #FF3040; }
 .copy-btn { margin-left:auto; }
 
 /* BUTTONS ZA AI NDOGO */
@@ -67,10 +68,34 @@ body { background:var(--bg); color:var(--text); }
 .btn-gpt { background:#10A37F; color:white; }
 .btn-gemini { background:#4285F4; color:white; }
 
-/* SOCIAL BUTTONS NDOGO */
+/* SOCIAL BUTTONS NDOGO CHINI */
 footer { text-align:center; margin-top:30px; padding:20px; }
 .social-buttons { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
 .social-btn { padding:6px 12px; border-radius:8px; text-decoration:none; font-weight:600; font-size:12px; }
 .wa-btn { background:#25D366; color:white; }
 .fb-btn { background:#1877F2; color:white; }
 #footerText { font-size:11px; color:var(--muted); }
+
+/* ================== ADMIN STYLE ================== */
+.btn-logout {
+  background:#F5F5F5; border:1px solid var(--border); color:var(--text);
+  padding:8px 14px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;
+}
+.btn-logout:hover { background:#E5E5E5; }
+
+.btn-primary {
+  width:100%; background:var(--accent); color:white; border:none;
+  padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer;
+  transition:0.2s;
+}
+.btn-primary:hover { opacity:0.9; }
+
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
+.form-group input,.form-group textarea {
+  width:100%; padding:12px; border:1px solid var(--border); border-radius:8px;
+  font-size:14px; background:#FAFAFA; color:var(--text);
+}
+.form-group input:focus,.form-group textarea:focus {
+  outline:none; border-color:var(--accent); background:white;
+}
