@@ -1,114 +1,136 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Nova Soft</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <style>.error-box{color:red; text-align:center; margin-top:10px; font-size:14px;}</style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
   <div class="container">
-    <div id="loginSection">
-      <div class="form-box">
-        <h3 id="loginTitle">Admin Login</h3>
-        <input type="email" id="adminEmail" placeholder="Email">
-        <input type="password" id="adminPass" placeholder="Password">
-        <button onclick="loginAdmin()" id="loginBtn">Ingia</button>
-        <div class="error-box" id="errorBox"></div>
-      </div>
-    </div>
 
-    <div id="adminSection" style="display:none;">
-      <header class="topbar">
-        <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
-        <div>
-          <button onclick="changeLang()" class="lang" id="langBtn">🌍 EN</button>
-          <button onclick="logout()" class="lang" id="logoutBtn">Toka</button>
+    <header class="topbar">
+      <div class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Nova Logo">
+        <div class="logo-text">
+          <h4>NOVA SOFT</h4>
+          <h2>ADMIN <span>PANEL</span></h2>
         </div>
-      </header>
-      <div class="form-box">
-        <h3 id="addTitle">Ongeza Prompt Mpya</h3>
-        <input type="text" id="category" placeholder="Category">
-        <input type="text" id="imageLink" placeholder="Link ya Picha">
-        <textarea id="prompt" placeholder="Andika Prompt yako kamili..."></textarea>
-        <button onclick="savePrompt()" id="saveBtn">Hifadhi Prompt</button>
+      </div>
+      <div class="header-actions">
+        <button class="lang" id="langBtn" onclick="changeLang()">🌍 SW</button>
+        <button class="btn-logout" id="logoutBtn" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- LOGIN FORM -->
+    <div id="loginBox" class="card" style="padding:24px; max-width:400px; margin:40px auto;">
+      <h2 id="loginTitle">Admin Login</h2>
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password">
+      </div>
+      <button class="btn-primary" onclick="login()">Login</button>
+      <p id="loginError" style="color:red; margin-top:10px; font-size:13px;"></p>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="display:none;">
+      <h2 id="addTitle">Add New Prompt</h2>
+      <div class="card" style="padding:20px;">
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="category" placeholder="AI, Design, Marketing">
+        </div>
+        <div class="form-group">
+          <label>Image Link</label>
+          <input type="text" id="image" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Full Prompt</label>
+          <textarea id="prompt" rows="5" placeholder="Write your full prompt..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="savePrompt()">Save Prompt</button>
+        <p id="status" style="margin-top:10px; font-size:13px;"></p>
       </div>
     </div>
+
   </div>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAUiJdxQ4Z1oQ1t-jSJ7pRU2Rif2I1ZsUU",
+  authDomain: "teknova-b248b.firebaseapp.com",
+  databaseURL: "https://teknova-b248b-default-rtdb.firebaseio.com",
+  projectId: "teknova-b248b",
+  storageBucket: "teknova-b248b.firebasestorage.app",
+  messagingSenderId: "603617582887",
+  appId: "1:603617582887:web:b07ec173acf94767d6d302"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
 
-  <script>
-    // CONFIG MPYA
-    const firebaseConfig = {
-      apiKey: "AIzaSyAUiJdxQ4Z1oQ1t-jSJ7pRU2Rif2I1ZsUU",
-      authDomain: "teknova-b248b.firebaseapp.com",
-      databaseURL: "https://teknova-b248b-default-rtdb.firebaseio.com",
-      projectId: "teknova-b248b",
-      storageBucket: "teknova-b248b.firebasestorage.app",
-      messagingSenderId: "603617582887",
-      appId: "1:603617582887:web:b07ec173acf94767d6d302"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
+let lang = localStorage.getItem('lang') || 'sw';
+const texts = {
+  sw: {login:"Ingia", logout:"Toka", add:"Ongeza Prompt Mpya", category:"Jamii", image:"Kiungo cha Picha", prompt:"Andika prompt kamili", save:"Hifadhi Prompt", lang:"🌍 EN"},
+  en: {login:"Login", logout:"Logout", add:"Add New Prompt", category:"Category", image:"Image Link", prompt:"Write your full prompt...", save:"Save Prompt", lang:"🌍 SW"}
+}
 
-    let lang = localStorage.getItem('lang') || 'sw';
-    const texts = {
-      sw: {loginTitle:"Admin Login", email:"Email", pass:"Neno la Siri", loginBtn:"Ingia", dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha", prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN", success:"Imehifadhiwa!"},
-      en: {loginTitle:"Admin Login", email:"Email", pass:"Password", loginBtn:"Login", dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link", prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW", success:"Saved!"}
-    }
-    function applyLang(){
-      document.getElementById('loginTitle').innerText = texts[lang].loginTitle;
-      document.getElementById('adminEmail').placeholder = texts[lang].email;
-      document.getElementById('adminPass').placeholder = texts[lang].pass;
-      document.getElementById('loginBtn').innerText = texts[lang].loginBtn;
-      document.getElementById('dashTitle').innerHTML = texts[lang].dash;
-      document.getElementById('addTitle').innerText = texts[lang].add;
-      document.getElementById('category').placeholder = texts[lang].cat;
-      document.getElementById('imageLink').placeholder = texts[lang].img;
-      document.getElementById('prompt').placeholder = texts[lang].prompt;
-      document.getElementById('saveBtn').innerText = texts[lang].save;
-      document.getElementById('logoutBtn').innerText = texts[lang].logout;
-      document.getElementById('langBtn').innerText = texts[lang].lang;
-    }
-    applyLang();
-    function changeLang(){ lang = lang === 'sw'? 'en' : 'sw'; localStorage.setItem('lang', lang); applyLang(); }
+function applyLangAdmin(){
+  document.getElementById('loginTitle').innerText = texts[lang].login;
+  document.getElementById('addTitle').innerText = texts[lang].add;
+  document.getElementById('logoutBtn').innerText = texts[lang].logout;
+  document.querySelector('#category').placeholder = texts[lang].category;
+  document.querySelector('#image').placeholder = texts[lang].image;
+  document.querySelector('#prompt').placeholder = texts[lang].prompt;
+  document.querySelector('.btn-primary').innerText = texts[lang].save;
+  document.getElementById('langBtn').innerText = texts[lang].lang;
+}
+function changeLang(){ lang = lang === 'sw'? 'en' : 'sw'; localStorage.setItem('lang', lang); applyLangAdmin(); }
 
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('adminSection').style.display = 'block';
-      } else {
-        document.getElementById('loginSection').style.display = 'block';
-        document.getElementById('adminSection').style.display = 'none';
-      }
-    });
+auth.onAuthStateChanged(user => {
+  if(user){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+  } else {
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+  }
+});
 
-    function loginAdmin(){
-      document.getElementById('errorBox').innerText = "";
-      const email = document.getElementById('adminEmail').value.trim();
-      const pass = document.getElementById('adminPass').value.trim();
-      if(!email ||!pass){ document.getElementById('errorBox').innerText = "Jaza Email na Password"; return; }
-      auth.signInWithEmailAndPassword(email, pass).catch((error) => {
-        document.getElementById('errorBox').innerText = "Error: " + error.code + " - " + error.message;
-      });
-    }
-    function logout(){ auth.signOut(); }
-    function savePrompt() {
-      const category = document.getElementById('category').value.trim();
-      const prompt = document.getElementById('prompt').value.trim();
-      const imageLink = document.getElementById('imageLink').value.trim();
-      if(!category ||!prompt) { alert("Jaza Category na Prompt"); return; }
-      db.ref('prompts').push({category, prompt, image:imageLink, likes: 25, createdAt: Date.now()}).then(() => {
-        alert(texts[lang].success);
-        document.getElementById('category').value = "";
-        document.getElementById('prompt').value = "";
-        document.getElementById('imageLink').value = "";
-      });
-    }
-  </script>
+function login(){
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  auth.signInWithEmailAndPassword(email, pass).catch(e=>{
+    document.getElementById('loginError').innerText = e.message;
+  });
+}
+function logout(){ auth.signOut(); }
+
+function savePrompt(){
+  const category = document.getElementById('category').value;
+  const image = document.getElementById('image').value;
+  const prompt = document.getElementById('prompt').value;
+  if(!category ||!prompt){ alert("Jaza Category na Prompt"); return; }
+
+  db.ref('prompts').push({
+    category, image, prompt,
+    likes: 0,
+    createdAt: Date.now()
+  });
+  document.getElementById('status').innerText = "✅ Imehifadhiwa!";
+  document.getElementById('category').value = "";
+  document.getElementById('image').value = "";
+  document.getElementById('prompt').value = "";
+  setTimeout(()=>document.getElementById('status').innerText="", 2000);
+}
+
+document.addEventListener('DOMContentLoaded', applyLangAdmin);
+</script>
 </body>
 </html>
