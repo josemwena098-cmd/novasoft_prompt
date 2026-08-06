@@ -13,41 +13,41 @@ const db = firebase.database();
 let lang = localStorage.getItem('lang') || 'sw';
 const texts = {
   sw: {
-    lib:"LIBRARY", 
-    rights:"© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI", 
-    lang:"🌍 EN", 
-    readMore:"SOMA ZAIDI", 
-    like:"❤️", 
-    copy:"📋", 
-    share:"📤", 
-    open:"Open on ChatGPT", 
-    gemini:"Gemini", 
-    noPrompts:"Hakuna prompts bado", 
-    copied:"Ime-Nakiliwa!", 
-    liked:"Umeshaipenda", 
-    shared:"Ime-Share!"
+    lib:"LIBRARY",
+    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
+    lang:"🌍 EN",
+    readMore:"Soma zaidi",
+    like:"",
+    copy:"Copy",
+    open:"Open on ChatGPT",
+    gemini:"Gemini",
+    noPrompts:"Hakuna prompts bado",
+    copied:"Ime-Nakiliwa!",
+    liked:"Umeshaipenda",
+    shared:"Ime-Share!",
+    downloaded:"Ime-Download!"
   },
   en: {
-    lib:"LIBRARY", 
-    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI", 
-    lang:"🌍 SW", 
-    readMore:"READ MORE", 
-    like:"❤️", 
-    copy:"📋", 
-    share:"📤", 
-    open:"Open on ChatGPT", 
-    gemini:"Gemini", 
-    noPrompts:"No prompts yet", 
-    copied:"Copied!", 
-    liked:"Already Liked", 
-    shared:"Shared!"
+    lib:"LIBRARY",
+    rights:"© 2026 Nova Soft. All Rights Reserved. Powered by AI",
+    lang:"🌍 SW",
+    readMore:"Read more",
+    like:"",
+    copy:"Copy",
+    open:"Open on ChatGPT",
+    gemini:"Gemini",
+    noPrompts:"No prompts yet",
+    copied:"Copied!",
+    liked:"Already Liked",
+    shared:"Shared!",
+    downloaded:"Downloaded!"
   }
 }
 
 function showToast(msg){
   const toast = document.createElement('div');
   toast.innerText = msg;
-  toast.style.cssText = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#10B981; color:white; padding:12px 20px; border-radius:8px; z-index:9999; font-size:14px; animation: fadeInUp 0.3s ease;`;
+  toast.style.cssText = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#111; color:white; padding:10px 16px; border-radius:8px; z-index:9999; font-size:13px; font-weight:500;`;
   document.body.appendChild(toast);
   setTimeout(()=>toast.remove(), 2000);
 }
@@ -69,9 +69,10 @@ function loadPrompts() {
     if(data){
       Object.keys(data).reverse().forEach(key => {
         const item = data[key];
-        const shortText = item.prompt.length > 120? item.prompt.substring(0,120)+"..." : item.prompt;
+        const shortText = item.prompt.length > 150? item.prompt.substring(0,150)+"..." : item.prompt;
         const safePrompt = item.prompt.replace(/`/g, "'").replace(/"/g, '&quot;');
-        const liked = localStorage.getItem('liked_'+key)? 'disabled' : "";
+        const liked = localStorage.getItem('liked_'+key)? 'liked' : "";
+        const likes = item.likes || 0;
         const currentUrl = window.location.href + '#prompt-' + key;
 
         container.innerHTML += `
@@ -79,18 +80,30 @@ function loadPrompts() {
             ${item.image? `
               <div class="card-img-container">
                 <img src="${item.image}" class="card-img" alt="prompt">
-                <div class="img-text-overlay">${item.category}</div>
               </div>
             ` : ""}
-            <div style="padding-top:15px;">
+            <div class="card-body">
               <span class="badge">${item.category}</span>
               <p class="prompt-text" id="text-${key}">${shortText}</p>
-              ${item.prompt.length > 120? `<a onclick="toggleText('${key}', \`${safePrompt}\`)">${texts[lang].readMore}</a>` : ""}
+              ${item.prompt.length > 150? `<a onclick="toggleText('${key}', \`${safePrompt}\`)">${texts[lang].readMore}</a>` : ""}
             </div>
             <div class="actions">
-              <button class="btn-like" ${liked} onclick="likePrompt('${key}', ${item.likes})">${texts[lang].like} ${item.likes}</button>
-              <button class="btn-copy" onclick="copyPrompt(\`${safePrompt}\`)">${texts[lang].copy}</button>
-              <button class="btn-share" onclick="sharePrompt(\`${safePrompt}\`, '${currentUrl}')">${texts[lang].share}</button>
+              <button class="action-btn like-btn ${liked}" onclick="likePrompt('${key}', ${likes})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                ${likes > 0? (likes/1000).toFixed(1)+'K' : ''}
+              </button>
+              <button class="action-btn" onclick="downloadImage('${item.image}', '${key}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </button>
+              <button class="action-btn" onclick="sharePrompt(\`${safePrompt}\`, '${currentUrl}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+              <button class="action-btn copy-btn" onclick="copyPrompt(\`${safePrompt}\`)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                ${texts[lang].copy}
+              </button>
+            </div>
+            <div class="ai-buttons">
               <button class="btn-gpt" onclick="openChatGPT(\`${safePrompt}\`)">${texts[lang].open}</button>
               <button class="btn-gemini" onclick="openGemini(\`${safePrompt}\`)">${texts[lang].gemini}</button>
             </div>
@@ -98,7 +111,7 @@ function loadPrompts() {
         `;
       });
     } else {
-      container.innerHTML = `<p style='text-align:center; color:#666; margin-top:20px;'>${texts[lang].noPrompts}</p>`;
+      container.innerHTML = `<p style='text-align:center; color:#999; margin-top:20px;'>${texts[lang].noPrompts}</p>`;
     }
   });
 }
@@ -107,13 +120,23 @@ function likePrompt(id, current){
   if(localStorage.getItem('liked_'+id)) { showToast(texts[lang].liked); return; }
   db.ref('prompts/'+id+'/likes').set(current + 1);
   localStorage.setItem('liked_'+id, 'true');
-  showToast(texts[lang].like);
+  showToast("❤️");
 }
 
-function copyPrompt(text){ 
-  navigator.clipboard.writeText(text).then(()=>{ 
-    showToast(texts[lang].copied); 
-  }); 
+function downloadImage(url, id){
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'nova-prompt-'+id+'.jpg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast(texts[lang].downloaded);
+}
+
+function copyPrompt(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast(texts[lang].copied);
+  });
 }
 
 function sharePrompt(text, url){
@@ -123,9 +146,9 @@ function sharePrompt(text, url){
       text: text,
       url: url
     }).then(() => showToast(texts[lang].shared))
-   .catch(() => {});
+  .catch(() => {});
   } else {
-    copyPrompt(text);
+    copyPrompt(text + " + url);
   }
 }
 
