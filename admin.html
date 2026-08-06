@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
+  <title>Admin - Nova Soft</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -11,43 +11,77 @@
 </head>
 <body>
   <div class="container">
-    <header class="topbar">
-      <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
-      <div>
-        <button onclick="changeLang()" class="lang" id="langBtn">🌍 EN</button>
-        <button onclick="logout()" class="lang" id="logoutBtn">Toka</button>
-      </div>
-    </header>
 
-    <div class="form-box">
-      <h3 id="addTitle">Ongeza Prompt Mpya</h3>
-      <input type="text" id="category" placeholder="Category">
-      <input type="text" id="imageLink" placeholder="Link ya Picha">
-      <textarea id="prompt" placeholder="Andika Prompt yako kamili..."></textarea>
-      <button onclick="savePrompt()" id="saveBtn">Hifadhi Prompt</button>
+    <!-- SEHEMU 1: LOGIN FORM -->
+    <div id="loginSection">
+      <div class="form-box">
+        <h3 id="loginTitle">Admin Login</h3>
+        <input type="email" id="adminEmail" placeholder="Email">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="loginAdmin()" id="loginBtn">Ingia</button>
+      </div>
     </div>
+
+    <!-- SEHEMU 2: ADMIN DASHBOARD - Imefichwa mwanzo -->
+    <div id="adminSection" style="display:none;">
+      <header class="topbar">
+        <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
+        <div>
+          <button onclick="changeLang()" class="lang" id="langBtn">🌍 EN</button>
+          <button onclick="logout()" class="lang" id="logoutBtn">Toka</button>
+        </div>
+      </header>
+
+      <div class="form-box">
+        <h3 id="addTitle">Ongeza Prompt Mpya</h3>
+        <input type="text" id="category" placeholder="Category">
+        <input type="text" id="imageLink" placeholder="Link ya Picha">
+        <textarea id="prompt" placeholder="Andika Prompt yako kamili..."></textarea>
+        <button onclick="savePrompt()" id="saveBtn">Hifadhi Prompt</button>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    const firebaseConfig = { /* WEKA CONFIG YAKO HAPA */ };
+    // WEKA FIREBASE CONFIG YAKO HAPA
+    const firebaseConfig = {
+      apiKey: "AIzaSy...",
+      authDomain: "teknova-3688d.firebaseapp.com",
+      databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
+      projectId: "teknova-3688d",
+      storageBucket: "teknova-3688d.appspot.com",
+      messagingSenderId: "...",
+      appId: "..."
+    };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // KAMA HAJALOGIN TUMA NYUMA
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        window.location.href = "admin-login.html";
-      }
-    });
-
+    // LUGHA
     let lang = localStorage.getItem('lang') || 'sw';
     const texts = {
-      sw: {dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha", prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN", success:"Imehifadhiwa!"},
-      en: {dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link", prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW", success:"Saved!"}
+      sw: {
+        loginTitle:"Admin Login", email:"Email", pass:"Neno la Siri", loginBtn:"Ingia",
+        dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha",
+        prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN",
+        success:"Imehifadhiwa!", error:"Email au Password si sahihi!"
+      },
+      en: {
+        loginTitle:"Admin Login", email:"Email", pass:"Password", loginBtn:"Login",
+        dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link",
+        prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW",
+        success:"Saved!", error:"Email or Password is incorrect!"
+      }
     }
+
     function applyLang(){
-      document.getElementById('dashTitle').innerText = texts[lang].dash;
+      document.getElementById('loginTitle').innerText = texts[lang].loginTitle;
+      document.getElementById('adminEmail').placeholder = texts[lang].email;
+      document.getElementById('adminPass').placeholder = texts[lang].pass;
+      document.getElementById('loginBtn').innerText = texts[lang].loginBtn;
+
+      document.getElementById('dashTitle').innerHTML = texts[lang].dash;
       document.getElementById('addTitle').innerText = texts[lang].add;
       document.getElementById('category').placeholder = texts[lang].cat;
       document.getElementById('imageLink').placeholder = texts[lang].img;
@@ -64,17 +98,55 @@
       applyLang();
     }
 
-    function logout(){
-      auth.signOut().then(()=>{ window.location.href = "admin-login.html"; });
+    // ANGALIA KAMA TAYARI AMELOGIN
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // Onyesha Dashboard
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('adminSection').style.display = 'block';
+      } else {
+        // Onyesha Login
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('adminSection').style.display = 'none';
+      }
+    });
+
+    // FUNCTION YA LOGIN
+    function loginAdmin(){
+      const email = document.getElementById('adminEmail').value;
+      const pass = document.getElementById('adminPass').value;
+      if(!email ||!pass){ alert("Jaza yote"); return; }
+
+      auth.signInWithEmailAndPassword(email, pass)
+   .catch((error) => {
+        alert(texts[lang].error);
+      });
     }
 
+    // FUNCTION YA LOGOUT
+    function logout(){
+      auth.signOut();
+    }
+
+    // FUNCTION YA KUHIFADHI PROMPT
     function savePrompt() {
       const category = document.getElementById('category').value;
       const prompt = document.getElementById('prompt').value;
       const imageLink = document.getElementById('imageLink').value;
-      if(!category ||!prompt) { alert("Jaza yote"); return; }
-      db.ref('prompts').push({category, prompt, image:imageLink, likes:25, createdAt:Date.now()})
-    .then(() => { alert(texts[lang].success); document.getElementById('category').value = ""; document.getElementById('prompt').value = ""; document.getElementById('imageLink').value = ""; });
+      if(!category ||!prompt) { alert("Jaza Category na Prompt"); return; }
+
+      db.ref('prompts').push({
+        category: category,
+        prompt: prompt,
+        image: imageLink,
+        likes: 25,
+        createdAt: Date.now()
+      }).then(() => {
+        alert(texts[lang].success);
+        document.getElementById('category').value = "";
+        document.getElementById('prompt').value = "";
+        document.getElementById('imageLink').value = "";
+      });
     }
   </script>
 </body>
