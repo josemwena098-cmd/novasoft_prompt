@@ -9,30 +9,30 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-
-  <header class="topbar">
-    <div class="logo">
-      <span>🤖</span>
-      <div>
-        <small>NOVA SOFT</small>
-        <h2>PROMPT <span id="libText">LIBRARY</span></h2>
-      </div>
-    </div>
-    <button onclick="changeLang()" class="lang" id="langBtn">🌍 EN</button>
-  </header>
-
   <div class="container">
-    <div id="promptsList"></div>
-  </div>
+    
+    <header class="topbar">
+      <div class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Nova Logo">
+        <div class="logo-text">
+          <h4>NOVA SOFT</h4>
+          <h2>PROMPT <span id="libText">LIBRARY</span></h2>
+        </div>
+      </div>
+      <button class="lang" id="langBtn" onclick="changeLang()">🌍 EN</button>
+    </header>
 
-  <footer>
-    <div class="share-btns">
-      <a href="#" class="wa">WhatsApp</a>
-      <a href="#" class="fb">Facebook</a>
+    <div class="grid" id="promptsList">
+      <p style="text-align:center; color:#666;">Inapakia...</p>
     </div>
-    <h2>NOVA <span>SOFT</span></h2>
-    <p id="footerText">© 2026 Nova Soft. All Rights Reserved. Powered by AI</p>
-  </footer>
+
+    <footer>
+      <a href="#" class="wa">WhatsApp</a> | 
+      <a href="#" class="fb">Facebook</a>
+      <p id="footerText" style="margin-top:10px;">© 2026 Nova Soft. Haki Zote Zimehifadhiwa. Inaendeshwa na AI</p>
+    </footer>
+
+  </div>
 
   <script src="script.js"></script>
 </body>
