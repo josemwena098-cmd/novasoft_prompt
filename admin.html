@@ -8,14 +8,10 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <style>
-   .error-box{color:red; text-align:center; margin-top:10px; font-size:14px;}
-  </style>
+  <style>.error-box{color:red; text-align:center; margin-top:10px; font-size:14px;}</style>
 </head>
 <body>
   <div class="container">
-
-    <!-- SEHEMU 1: LOGIN FORM -->
     <div id="loginSection">
       <div class="form-box">
         <h3 id="loginTitle">Admin Login</h3>
@@ -26,7 +22,6 @@
       </div>
     </div>
 
-    <!-- SEHEMU 2: ADMIN DASHBOARD -->
     <div id="adminSection" style="display:none;">
       <header class="topbar">
         <h2 id="dashTitle">Admin <span>Dashboard</span></h2>
@@ -35,7 +30,6 @@
           <button onclick="logout()" class="lang" id="logoutBtn">Toka</button>
         </div>
       </header>
-
       <div class="form-box">
         <h3 id="addTitle">Ongeza Prompt Mpya</h3>
         <input type="text" id="category" placeholder="Category">
@@ -44,41 +38,28 @@
         <button onclick="savePrompt()" id="saveBtn">Hifadhi Prompt</button>
       </div>
     </div>
-
   </div>
 
   <script>
-    // === MUHIMU: WEKA FIREBASE CONFIG YAKO HALISI HAPA ===
+    // CONFIG MPYA
     const firebaseConfig = {
-      apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxx", // NAKILI YAKO KUTOKA FIREBASE
-      authDomain: "teknova-3688d.firebaseapp.com",
-      databaseURL: "https://teknova-3688d-default-rtdb.firebaseio.com",
-      projectId: "teknova-3688d",
-      storageBucket: "teknova-3688d.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:xxxxxxxxxxxxx"
+      apiKey: "AIzaSyAUiJdxQ4Z1oQ1t-jSJ7pRU2Rif2I1ZsUU",
+      authDomain: "teknova-b248b.firebaseapp.com",
+      databaseURL: "https://teknova-b248b-default-rtdb.firebaseio.com",
+      projectId: "teknova-b248b",
+      storageBucket: "teknova-b248b.firebasestorage.app",
+      messagingSenderId: "603617582887",
+      appId: "1:603617582887:web:b07ec173acf94767d6d302"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // LUGHA
     let lang = localStorage.getItem('lang') || 'sw';
     const texts = {
-      sw: {
-        loginTitle:"Admin Login", email:"Email", pass:"Neno la Siri", loginBtn:"Ingia",
-        dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha",
-        prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN",
-        success:"Imehifadhiwa!"
-      },
-      en: {
-        loginTitle:"Admin Login", email:"Email", pass:"Password", loginBtn:"Login",
-        dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link",
-        prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW",
-        success:"Saved!"
-      }
+      sw: {loginTitle:"Admin Login", email:"Email", pass:"Neno la Siri", loginBtn:"Ingia", dash:"Admin Dashboard", add:"Ongeza Prompt Mpya", cat:"Category", img:"Link ya Picha", prompt:"Andika Prompt yako kamili...", save:"Hifadhi Prompt", logout:"Toka", lang:"🌍 EN", success:"Imehifadhiwa!"},
+      en: {loginTitle:"Admin Login", email:"Email", pass:"Password", loginBtn:"Login", dash:"Admin Dashboard", add:"Add New Prompt", cat:"Category", img:"Image Link", prompt:"Write your full prompt...", save:"Save Prompt", logout:"Logout", lang:"🌍 SW", success:"Saved!"}
     }
-
     function applyLang(){
       document.getElementById('loginTitle').innerText = texts[lang].loginTitle;
       document.getElementById('adminEmail').placeholder = texts[lang].email;
@@ -94,14 +75,8 @@
       document.getElementById('langBtn').innerText = texts[lang].lang;
     }
     applyLang();
+    function changeLang(){ lang = lang === 'sw'? 'en' : 'sw'; localStorage.setItem('lang', lang); applyLang(); }
 
-    function changeLang(){
-      lang = lang === 'sw'? 'en' : 'sw';
-      localStorage.setItem('lang', lang);
-      applyLang();
-    }
-
-    // ANGALIA KAMA TAYARI AMELOGIN
     auth.onAuthStateChanged(user => {
       if (user) {
         document.getElementById('loginSection').style.display = 'none';
@@ -112,33 +87,22 @@
       }
     });
 
-    // FUNCTION YA LOGIN - IKO NA ERROR DETAIL
     function loginAdmin(){
       document.getElementById('errorBox').innerText = "";
       const email = document.getElementById('adminEmail').value.trim();
       const pass = document.getElementById('adminPass').value.trim();
       if(!email ||!pass){ document.getElementById('errorBox').innerText = "Jaza Email na Password"; return; }
-
-      auth.signInWithEmailAndPassword(email, pass)
-   .catch((error) => {
-        // HII ITAONYESHA SHIDA HALISI
+      auth.signInWithEmailAndPassword(email, pass).catch((error) => {
         document.getElementById('errorBox').innerText = "Error: " + error.code + " - " + error.message;
       });
     }
-
-    // FUNCTION YA LOGOUT
     function logout(){ auth.signOut(); }
-
-    // FUNCTION YA KUHIFADHI PROMPT
     function savePrompt() {
       const category = document.getElementById('category').value.trim();
       const prompt = document.getElementById('prompt').value.trim();
       const imageLink = document.getElementById('imageLink').value.trim();
       if(!category ||!prompt) { alert("Jaza Category na Prompt"); return; }
-
-      db.ref('prompts').push({
-        category, prompt, image:imageLink, likes: 25, createdAt: Date.now()
-      }).then(() => {
+      db.ref('prompts').push({category, prompt, image:imageLink, likes: 25, createdAt: Date.now()}).then(() => {
         alert(texts[lang].success);
         document.getElementById('category').value = "";
         document.getElementById('prompt').value = "";
