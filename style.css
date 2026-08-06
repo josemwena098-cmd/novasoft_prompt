@@ -4,14 +4,14 @@
   --bg: #FFFFFF;
   --card: #FFFFFF;
   --border: #E5E5E5;
-  --text: #111111;
+  --text: #111;
   --muted: #737373;
   --accent: #00A3FF;
 }
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
 body { background:var(--bg); color:var(--text); }
 
-.container { max-width:600px; margin:0 auto; padding:16px; }
+.container { max-width:1100px; margin:0 auto; padding:16px; } /* nimeiongeza ili ishike 2 columns */
 .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid var(--border); }
 
 .logo { display:flex; align-items:center; gap:10px; }
@@ -23,9 +23,20 @@ body { background:var(--bg); color:var(--text); }
 .header-actions { display:flex; gap:8px; }
 .lang { background:#F5F5F5; border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; }
 
-.grid { display:grid; gap:24px; }
+/* HAPA NDIO GRID YA COLUMN 2 */
+.grid { 
+  display:grid; 
+  gap:20px; 
+  grid-template-columns: 1fr; /* default simu = 1 column */
+} 
+/* Tablet na Desktop */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr; /* tablet/desktop = 2 columns */
+  }
+}
 
-/* CARD STYLE YA MAIN SITE */
+/* CARD STYLE */
 .card {
   background:var(--card);
   border-radius:12px;
@@ -54,10 +65,10 @@ body { background:var(--bg); color:var(--text); }
 .prompt-text { font-size:14px; color:#333; line-height:1.5; margin-bottom:8px; }
 .card a { color:var(--accent); font-size:13px; font-weight:600; cursor:pointer; }
 
-/* BUTTONS ZA CHINI KAMA INSTAGRAM */
-.actions { display:flex; align-items:center; gap:16px; padding:8px 16px 12px; border-top:1px solid var(--border); }
+/* BUTTONS ZA CHINI */
+.actions { display:flex; align-items:center; gap:12px; padding:8px 16px 12px; border-top:1px solid var(--border); flex-wrap:wrap; }
 .action-btn { background:none; border:none; display:flex; align-items:center; gap:6px; font-size:14px; font-weight:500; color:var(--text); cursor:pointer; padding:6px; }
-.action-btn svg { width:24px; height:24px; }
+.action-btn svg { width:22px; height:22px; }
 .action-btn:hover { opacity:0.6; }
 .like-btn.liked svg { fill: #FF3040; stroke: #FF3040; color: #FF3040; }
 .copy-btn { margin-left:auto; }
@@ -76,25 +87,23 @@ footer { text-align:center; margin-top:30px; padding:20px; }
 .fb-btn { background:#1877F2; color:white; }
 #footerText { font-size:11px; color:var(--muted); }
 
-/* ================== ADMIN STYLE ================== */
+/* ADMIN STYLE */
 .btn-logout {
   background:#F5F5F5; border:1px solid var(--border); color:var(--text);
   padding:8px 14px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;
 }
 .btn-logout:hover { background:#E5E5E5; }
-
 .btn-primary {
   width:100%; background:var(--accent); color:white; border:none;
   padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer;
   transition:0.2s;
 }
 .btn-primary:hover { opacity:0.9; }
-
 .form-group { margin-bottom:16px; }
 .form-group label { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
 .form-group input,.form-group textarea {
   width:100%; padding:12px; border:1px solid var(--border); border-radius:8px;
-  font-size:14px; background:#FAFAFA; color:var(--text);
+  font-size:14px; background:#FA; color:var(--text);
 }
 .form-group input:focus,.form-group textarea:focus {
   outline:none; border-color:var(--accent); background:white;
